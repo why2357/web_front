@@ -3,10 +3,12 @@ import request from './request';
 
 // 音色信息接口 (对应后端 /api/voices/templates)
 export interface Voice {
-  id: string;
+  id: string | number;
   name: string;
   description: string;
   avatar_url: string | null;
+  /** 试听音频地址，有则直接播放，无需调生成接口 */
+  audio_url?: string | null;
   gender: 'male' | 'female' | 'neutral';
   age_range: string;
   tags: string[];
@@ -17,33 +19,53 @@ export interface Voice {
   created_at: string;
 }
 
+export interface VoicesPageResult {
+  items: Voice[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
 /**
- * 获取音色模板列表
- * @param params 查询参数
- * @returns 返回音色模板列表
+ * 获取音色模板列表（分页，用于无限滚动）
  */
-export const getVoices = async (params?: {
+export const getVoicesPage = async (params: {
+  page?: number;
+  page_size?: number;
   gender?: string;
   age_range?: string;
   category?: string;
   tags?: string[];
   keyword?: string;
   sort_by?: string;
-  page?: number;
-  page_size?: number;
-}): Promise<Voice[]> => {
-  // 后端此接口返回分页数据，这里解包只返回 items 数组以适配现有 UI
-  const response: any = await request.get('/api/voices/templates', { params });
-  
+}): Promise<VoicesPageResult> => {
+  const { page = 1, page_size = 20, ...rest } = params;
+  const response: any = await request.get('/api/voices/templates', {
+    params: { page, page_size, ...rest },
+  });
+
   if (Array.isArray(response)) {
-    return response;
+    return { items: response, total: response.length, page: 1, page_size: response.length, total_pages: 1 };
   }
-  
   if (response && response.items) {
-    return response.items;
+    return {
+      items: response.items,
+      total: response.total ?? response.items.length,
+      page: response.page ?? 1,
+      page_size: response.page_size ?? response.items.length,
+      total_pages: response.total_pages ?? 1,
+    };
   }
-  
-  return [];
+  return { items: [], total: 0, page: 1, page_size: 20, total_pages: 0 };
+};
+
+/**
+ * 获取音色模板列表（兼容旧用法，只返回第一页）
+ */
+export const getVoices = async (params?: Parameters<typeof getVoicesPage>[0]): Promise<Voice[]> => {
+  const result = await getVoicesPage({ ...params, page: 1, page_size: params?.page_size ?? 20 });
+  return result.items;
 };
 
 // 自定义音色接口

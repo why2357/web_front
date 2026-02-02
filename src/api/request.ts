@@ -1,28 +1,33 @@
 // HTTP 请求封装（类似后端的 RestTemplate）
 import axios from 'axios';
 
-// 创建 axios 实例
+// 开发环境默认连本地后端，生产环境默认相对路径（同域 Nginx 反代）；可用 .env 里 VITE_API_BASE 覆盖
+const baseURL =
+  (import.meta.env.VITE_API_BASE as string | undefined) ||
+  (import.meta.env.DEV ? 'http://localhost:8000/tts/' : '/tts/');
+
 const service = axios.create({
-  baseURL: 'http://localhost:8000/tts/',
+  baseURL,
   timeout: 10000,
 });
 
-// 开发环境不再自动注入 admin token，需通过 /login 登录获取用户 token
-
-// 请求拦截器：自动添加 Token
+// 请求拦截器：开发环境只从 .env.development.local 取 VITE_DEV_TOKEN，生产环境只用登录后的 localStorage token
 service.interceptors.request.use(
   (config) => {
-    // 从 localStorage 获取 token 与过期时间（带一点宽限期以避免边界问题）
-    const token = localStorage.getItem('access_token');
-    const exp = localStorage.getItem('access_token_expires_at');
-    const graceMs = 5000;
-    if (token && exp && Number(exp) - Date.now() > -graceMs) {
-      // token 未过期（或刚好过期在宽限期内），附带 Authorization
-      config.headers.Authorization = `Bearer ${token}`;
+    let token: string | null = null;
+    const isDev = import.meta.env.DEV;
+
+    if (isDev) {
+      token = import.meta.env.VITE_DEV_TOKEN || null;
     } else {
-      // token 不存在或已过期：清理本地存储（但不进行跳转，401 由响应拦截器处理）
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('access_token_expires_at');
+      const stored = localStorage.getItem('access_token');
+      const exp = localStorage.getItem('access_token_expires_at');
+      const graceMs = 5000;
+      if (stored && exp && Number(exp) - Date.now() > -graceMs) token = stored;
+    }
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

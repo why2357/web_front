@@ -1,6 +1,6 @@
 // 用户页 — 组件化容器（hook + 小组件）
 import './index.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUserPage } from './useUserPage';
 import VoiceCard from './components/VoiceCard';
 import EmotionControls from './components/EmotionControls';
@@ -16,6 +16,13 @@ function User() {
   const ui = useUserPage();
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string; audioUrl?: string; creditsUsed?: number } | null>(null);
   const [cloneDragOver, setCloneDragOver] = useState(false);
+
+  useEffect(() => {
+    if (!ui.filterOpen) return;
+    const close = () => ui.setFilterOpen(false);
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, [ui.filterOpen, ui.setFilterOpen]);
 
   return (
     <div className="user-page">
@@ -64,25 +71,87 @@ function User() {
       <div className="workspace">
         {/* 左侧：音色库 */}
         <aside className="panel">
-          <div className="panel-header">
+          <div className="panel-header panel-header--with-filter">
             <h3>音色库</h3>
-            <button className="filter-btn">
-              <svg className="icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M6 12h12m-9 6h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              筛选
-            </button>
+            <div className="filter-wrap">
+              <button
+                type="button"
+                className={`filter-btn ${ui.filterOpen ? 'active' : ''}`}
+                onClick={(e) => { e.stopPropagation(); ui.setFilterOpen(!ui.filterOpen); }}
+              >
+                <svg className="icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M6 12h12m-9 6h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                筛选
+              </button>
+              {ui.filterOpen && (
+                <div className="filter-dropdown" onClick={(e) => e.stopPropagation()}>
+                  <div className="filter-dropdown-section">
+                    <span className="filter-dropdown-label">性别</span>
+                    <div className="filter-dropdown-options">
+                      {[
+                        { value: '', label: '全部' },
+                        { value: 'male', label: '男' },
+                        { value: 'female', label: '女' },
+                      ].map((o) => (
+                        <button
+                          key={o.value || 'all'}
+                          type="button"
+                          className={`filter-opt ${ui.voiceFilter.gender === o.value ? 'active' : ''}`}
+                          onClick={() => ui.applyVoiceFilter({ gender: o.value })}
+                        >
+                          {o.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="filter-dropdown-section">
+                    <span className="filter-dropdown-label">年龄段</span>
+                    <div className="filter-dropdown-options">
+                      {[
+                        { value: '', label: '全部' },
+                        { value: 'child', label: '儿童' },
+                        { value: 'youth', label: '青年' },
+                        { value: 'middle', label: '中年' },
+                        { value: 'old', label: '老年' },
+                      ].map((o) => (
+                        <button
+                          key={o.value || 'all'}
+                          type="button"
+                          className={`filter-opt ${ui.voiceFilter.age_range === o.value ? 'active' : ''}`}
+                          onClick={() => ui.applyVoiceFilter({ age_range: o.value })}
+                        >
+                          {o.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="voice-list-container">
-            {ui.voices.map(v => (
+          <div
+            ref={ui.voiceListRef}
+            className="voice-list-container"
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              if (el.scrollTop + el.clientHeight >= el.scrollHeight - 80 && ui.hasMoreVoices && !ui.loadingVoices) {
+                ui.loadMoreVoices();
+              }
+            }}
+          >
+            {ui.voices.map((v) => (
               <VoiceCard
                 key={v.id}
                 voice={v}
                 active={ui.selectedVoice?.id === v.id}
-                playing={ui.playingVoiceId === v.id}
+                playing={ui.playingVoiceId === String(v.id)}
                 onSelect={ui.setSelectedVoice}
                 onPreview={(e, voice) => { e.stopPropagation(); ui.handlePreviewVoice(voice); }}
               />
             ))}
+            {ui.loadingVoices && (
+              <div className="voice-list-loading">加载中…</div>
+            )}
           </div>
         </aside>
 
@@ -203,7 +272,6 @@ function User() {
         <aside className="panel">
           <div className="panel-header">
             <h3>生成历史</h3>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-sub)' }}>最近20条</span>
           </div>
           <div className="voice-list-container timeline-container" style={{ padding: '20px' }}>
             <HistoryList history={ui.history} />

@@ -17,8 +17,23 @@ function Login() {
   const [countdown, setCountdown] = useState(0);
   const [rememberMe, setRememberMe] = useState(true);
 
-  // 组件挂载时：若 localStorage 有未过期的 token，则自动获取用户并跳转（实现“自动登录”）
+  // 生产环境：若 localStorage 有未过期的 token 则自动跳转；开发环境：若配置了 VITE_DEV_TOKEN 则用该 token 拉用户并按角色跳转 /admin 或 /user
   useEffect(() => {
+    const env = (import.meta as { env?: { DEV?: boolean; VITE_DEV_TOKEN?: string } }).env;
+    if (env?.DEV) {
+      const remembered = localStorage.getItem('remembered_phone');
+      if (remembered) setPhone(remembered);
+      if (env?.VITE_DEV_TOKEN) {
+        getCurrentUser()
+          .then((userInfo) => {
+            if (userInfo.role === 'admin') navigate('/admin');
+            else navigate('/user');
+          })
+          .catch(() => { /* token 无效时留在登录页 */ });
+      }
+      return;
+    }
+
     const tryAutoLogin = async () => {
       const token = localStorage.getItem('access_token');
       const exp = localStorage.getItem('access_token_expires_at');
@@ -31,7 +46,6 @@ function Login() {
           if (userInfo.role === 'admin') navigate('/admin');
           else navigate('/user');
         } catch (err) {
-          // 如果自动获取用户失败，则清理过期/无效 token（后续用户可手动登录）
           console.warn('自动登录失败，需重新登录', err);
           localStorage.removeItem('access_token');
           localStorage.removeItem('access_token_expires_at');
@@ -213,7 +227,7 @@ function Login() {
       </div>
       
       <footer className="login-footer">
-        © 2026 Crea Vedio Inc. Powered by Intelligent Engine
+        © 蜂云世界
       </footer>
     </div>
   );
