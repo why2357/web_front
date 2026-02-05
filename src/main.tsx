@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
@@ -12,7 +11,7 @@ if (!rootElement) {
 
 // 创建 React 根节点并渲染 App 组件
 ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )

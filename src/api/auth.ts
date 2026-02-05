@@ -31,6 +31,26 @@ export const logout = () => {
   return Promise.resolve();
 };
 
+// 设置退出登录标记（防止开发环境自动登录）
+export const setLogoutFlag = () => {
+  sessionStorage.setItem('just_logged_out', Date.now().toString());
+};
+
+// 检查是否刚退出登录（5秒内有效）
+export const getLogoutFlag = (): boolean => {
+  const flag = sessionStorage.getItem('just_logged_out');
+  if (flag) {
+    const logoutTime = parseInt(flag, 10);
+    const now = Date.now();
+    // 5秒内的退出标记才有效
+    if (now - logoutTime < 5000) {
+      return true;
+    }
+    sessionStorage.removeItem('just_logged_out');
+  }
+  return false;
+};
+
 // 使用邀请码（输入邀请码获取积分）
 export const useInviteCode = (invite_code: string): Promise<{ credits: number; expires_at?: string; activated?: boolean }> => {
   return request.post('/api/auth/use-invite-code', { invite_code });

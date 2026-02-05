@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAdminTransactions, AdminTransactionItem, getAdminUsers, AdminUserItem, updateUserStatus, rechargeCredits, getInviteCodes, generateInviteCode, InviteCodeItem } from '../../api/admin';
 import { getCurrentUser, UserInfo } from '../../api/user';
-import { logout } from '../../api/auth';
+import { logout, setLogoutFlag } from '../../api/auth';
 import { Modal, Button } from '../../components/ui';
 import './index.css';
 
@@ -265,6 +265,7 @@ function Admin() {
 
   const handleLogout = async () => {
     try {
+      setLogoutFlag(); // 设置退出标记，防止开发环境自动登录
       await logout();
       localStorage.removeItem('access_token');
       localStorage.removeItem('access_token_expires_at');
