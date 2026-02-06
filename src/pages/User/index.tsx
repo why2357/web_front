@@ -8,14 +8,13 @@ import BasicParams from './components/BasicParams';
 import TextComposer from './components/TextComposer';
 import GenerateButton from './components/GenerateButton';
 import HistoryList from './components/HistoryList';
-import AudioPlayer from './components/AudioPlayer';
+import GeneratedAudioList from './components/GeneratedAudioList';
 
 // UI primitives (shared)
 import { Button, Modal } from '../../components/ui';
 
 function User() {
   const ui = useUserPage();
-  const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string; audioUrl?: string; creditsUsed?: number } | null>(null);
   const [cloneDragOver, setCloneDragOver] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -270,31 +269,30 @@ function User() {
               <TextComposer text={ui.text} setText={ui.setText} />
             </div>
           </div>
+
+          {/* 生成结果音频列表 */}
+          <GeneratedAudioList
+            audios={ui.generatedAudios}
+            playingId={ui.playingAudioId}
+            onPlay={ui.handlePlayGeneratedAudio}
+            onRemove={ui.handleRemoveGeneratedAudio}
+          />
+
           <div className="composer-actions">
             <GenerateButton
               loading={ui.loading}
               uploadingClone={ui.uploadingClone}
               uploadingEmo={ui.uploadingEmo}
               onClick={async () => {
-                setSubmitMessage(null);
                 try {
-                  const result = await ui.handleSubmit();
-                  const res = result && typeof result === 'object' ? result as { audio_url?: string; credits_used?: number } : null;
-                  const audioUrl = result && (typeof result === 'string' ? result : res?.audio_url);
-                  const creditsUsed = res?.credits_used;
-                  setSubmitMessage({
-                    type: 'success',
-                    text: '语音生成成功，可直接播放或到历史记录中查看',
-                    ...(audioUrl ? { audioUrl } : {}),
-                    ...(creditsUsed != null ? { creditsUsed } : {}),
-                  });
+                  await ui.handleSubmit();
                 } catch (err: any) {
                   const res = err?.response?.data;
                   const msg =
                     err?.message ||
                     (res && (res.message ?? res.detail ?? res.msg ?? (typeof res.error === 'string' ? res.error : null))) ||
                     (typeof err === 'string' ? err : '合成失败');
-                  setSubmitMessage({ type: 'error', text: msg });
+                  alert(msg);
                 }
               }}
             />
@@ -312,34 +310,6 @@ function User() {
           </div>
         </aside>
       </div>
-
-      {/* --- 生成结果/错误弹窗：成功时展示音频播放器，可直接播放 --- */}
-      {submitMessage && (
-        <div className="submit-msg-overlay" onClick={() => setSubmitMessage(null)}>
-          <div
-            role="alert"
-            className={submitMessage.type === 'error' ? 'submit-msg-box submit-msg-box--error' : 'submit-msg-box submit-msg-box--success'}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="submit-msg-box__text">{submitMessage.text}</p>
-            {submitMessage.type === 'success' && submitMessage.audioUrl && (
-              <div className="submit-msg-audio-wrap">
-                {submitMessage.creditsUsed != null && (
-                  <div className="submit-msg-credits">积分花费：<span>{submitMessage.creditsUsed}</span></div>
-                )}
-                <AudioPlayer src={submitMessage.audioUrl} className="submit-msg-audio" />
-              </div>
-            )}
-            <button type="button" className="submit-msg-box__btn" onClick={async () => {
-              setSubmitMessage(null);
-              // 更新用户积分信息
-              await ui.loadUserInfo();
-            }} style={{ marginTop: 16 }}>
-              确定
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* --- Invite code modal --- */}
       <Modal open={ui.inviteModalOpen} onClose={ui.closeInviteModal} title="输入激活码以获取积分" width={420}>

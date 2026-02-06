@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea Vedio - 高级管理后台</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #eef2ff;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
+            --sidebar-width: 260px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; }
+        
+        body { 
+            background: #f1f5f9;
+            color: var(--text-main); 
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .logo-box {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            padding: 24px 16px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-sub);
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: #f8fafc;
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .top-header {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+        }
+
+        /* 页面切换逻辑 */
+        .page-view {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .page-view.active {
+            display: block;
+        }
+
+        /* 卡片样式复用 */
+        .card { 
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-md); 
+            border: 1px solid var(--border); 
+            overflow: hidden; 
+            margin-bottom: 32px;
+        }
+        
+        .card-header { 
+            padding: 24px 28px; 
+            border-bottom: 1px solid var(--border); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: linear-gradient(to right, #ffffff, #fafbfc);
+        }
+
+        .card-title { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: var(--text-main);
+        }
+
+        /* 表格样式复用 */
+        table { width: 100%; border-collapse: collapse; }
+        th { 
+            text-align: left; 
+            padding: 18px 28px; 
+            background: #f8fafc; 
+            color: var(--text-sub); 
+            font-size: 12px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+        }
+        td { 
+            padding: 18px 28px; 
+            border-bottom: 1px solid var(--border); 
+            font-size: 14px; 
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: #fdfdfd; }
+
+        /* 按钮与输入框 */
+        .btn { 
+            padding: 10px 20px; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            border: none; 
+            font-size: 14px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-primary { 
+            background: var(--primary-gradient); 
+            color: white;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5); }
+        
+        .btn-ghost { background: transparent; color: var(--text-sub); border: 2px solid var(--border); }
+        .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+        .btn-success { background: #10b981; color: white; }
+
+        input, select { 
+            padding: 10px 14px; 
+            border: 2px solid var(--border); 
+            border-radius: 10px; 
+            outline: none; 
+            font-size: 14px;
+        }
+        input:focus { border-color: var(--primary); }
+        
+        /* 优化日期选择器交互 */
+        input[type="date"] {
+            cursor: pointer;
+            position: relative;
+        }
+        /* 让点击整个 input 都能触发日历 (针对支持 picker 的浏览器) */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: auto;
+            height: auto;
+            color: transparent;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        /* 状态标签 */
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-frozen { background: #fee2e2; color: #991b1b; }
+        .amount-pos { color: var(--success); font-weight: 700; }
+        .amount-neg { color: var(--danger); font-weight: 700; }
+
+        .action-link { 
+            color: var(--primary); 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-right: 12px; 
+            position: relative;
+            z-index: 5;
+        }
+        .action-link:hover { text-decoration: underline; }
+        .link-danger { color: var(--danger); }
+
+        /* 邀请码生成页特殊样式 */
+        .invite-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+            text-align: center;
+        }
+        #inviteCodeDisplay {
+            font-family: monospace;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--primary);
+            margin: 24px 0;
+            padding: 20px 40px;
+            background: #f8fafc;
+            border: 2px dashed var(--primary);
+            border-radius: 16px;
+            width: auto;
+            min-width: 300px;
+            text-align: center;
+        }
+        
+        /* 分页样式 - 2.0 */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* 靠右对齐 */
+            padding: 20px 28px;
+            border-top: 1px solid var(--border);
+            color: var(--text-sub);
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .page-total {
+            margin-right: 16px;
+        }
+
+        /* 下拉选框 */
+        .page-size-wrapper {
+            position: relative;
+            margin-right: 12px;
+        }
+        .page-size-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100px;
+            height: 32px;
+            padding: 0 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+            color: var(--text-main);
+            font-size: 13px;
+        }
+        .page-size-trigger:hover, .page-size-wrapper.open .page-size-trigger {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .page-size-menu {
+            position: absolute;
+            bottom: 100%; /* 向上弹出 */
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            margin-bottom: 4px;
+            z-index: 20;
+            overflow: hidden;
+        }
+        .page-size-wrapper.open .page-size-menu {
+            display: block;
+            animation: fadeIn 0.2s;
+        }
+        .page-size-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background 0.1s;
+            font-size: 13px;
+        }
+        .page-size-option:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .page-size-option.selected {
+            color: var(--primary);
+            font-weight: 600;
+            background: #f8fafc;
+        }
+
+        /* 翻页按钮组 */
+        .page-btn-group {
+            display: flex;
+            gap: 8px;
+            margin-right: 16px;
+        }
+        .page-btn {
+            min-width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: none;
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 0 4px;
+        }
+        .page-btn:hover:not(:disabled):not(.active) {
+            background: #e2e8f0;
+        }
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8fafc;
+            color: #94a3b8;
+        }
+
+        /* 跳转输入 */
+        .page-jump {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .page-jump input {
+            width: 48px;
+            height: 32px;
+            padding: 0;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .page-jump input:focus {
+            border-color: var(--primary);
+        }
+
+        /* 动画 */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 模态框 */
+        .modal-overlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        .modal-card { background: white; border-radius: 20px; width: 400px; padding: 32px; box-shadow: var(--shadow-xl); }
+        .form-item { margin-bottom: 20px; }
+        .form-item label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-sub); }
+        .form-item input { width: 100%; }
+
+        /* Dark Mode - Pure Black Theme */
+        html.dark-mode {
+            --bg: #000000;
+            --text-main: #ededed;
+            --text-sub: #a1a1aa;
+            --border: #27272a;
+            --primary-light: #27272a;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.8);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.8);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.9);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.9);
+        }
+        html.dark-mode body {
+            background: #000000;
+            color: var(--text-main);
+        }
+        html.dark-mode .sidebar,
+        html.dark-mode .top-header,
+        html.dark-mode .card,
+        html.dark-mode .page-size-menu,
+        html.dark-mode .modal-card,
+        html.dark-mode .page-size-trigger {
+            background: #121212;
+            border-color: var(--border);
+        }
+        html.dark-mode .nav-item:hover {
+            background: #18181b;
+        }
+        html.dark-mode .nav-item.active {
+            background: #18181b;
+            color: var(--primary);
+        }
+        html.dark-mode .card-header {
+            background: #121212;
+            border-bottom-color: var(--border);
+        }
+        html.dark-mode th {
+            background: #000000;
+            color: var(--text-sub);
+        }
+        html.dark-mode tr:hover {
+            background: #18181b;
+        }
+        html.dark-mode input, html.dark-mode select {
+            background: #000000;
+            border-color: var(--border);
+            color: var(--text-main);
+        }
+        html.dark-mode .page-btn {
+            background: #18181b;
+            color: var(--text-main);
+        }
+        html.dark-mode .page-btn:hover:not(:disabled):not(.active) {
+            background: #27272a;
+        }
+        html.dark-mode .main-content {
+            background: #000000;
+        }
+        html.dark-mode #inviteCodeDisplay {
+            background: #000000;
+        }
+        /* Toggle Button */
+        .theme-toggle {
+            margin-right: 20px;
+            cursor: pointer;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Library Management Styles */
+        .lib-tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+        .lib-tab { padding: 12px 0; cursor: pointer; color: var(--text-sub); font-weight: 500; position: relative; transition: color 0.2s; }
+        .lib-tab.active { color: var(--primary); font-weight: 600; }
+        .lib-tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background: var(--primary); }
+        
+        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .lib-card-item { 
+            background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; 
+            display: flex; flex-direction: column; gap: 16px; transition: all 0.2s; 
+        }
+        .lib-card-item:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--primary-light); }
+        html.dark-mode .lib-card-item { background: #18181b; border-color: #27272a; }
+        
+        .lib-card-header { display: flex; align-items: center; gap: 12px; }
+        .lib-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
+        .lib-info { flex: 1; min-width: 0; }
+        .lib-name { font-weight: 600; font-size: 15px; margin-bottom: 2px; color: var(--text-main); }
+        .lib-tag { font-size: 12px; color: var(--text-sub); }
+        .lib-desc { font-size: 13px; color: var(--text-sub); line-height: 1.5; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .lib-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: auto; padding-top: 16px; border-top: 1px dashed var(--border); }
+        .btn-icon { padding: 6px; border-radius: 6px; color: var(--text-sub); cursor: pointer; transition: all 0.2s; }
+        .btn-icon:hover { background: #f1f5f9; color: var(--text-main); }
+        .btn-icon.danger:hover { background: #fef2f2; color: var(--danger); }
+        
+        .v-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .v-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
+        .v-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
+        .v-purple { background: linear-gradient(135deg, #a855f7, #9333ea); }
+        
+        .color-sel-group { display: flex; gap: 12px; margin-top: 8px; }
+        .color-sel { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+        .color-sel.selected { border-color: var(--text-main); transform: scale(1.1); }
+
+    </style>
+</head>
+<body>
+
+<!-- 侧边栏 -->
+<div class="sidebar">
+    <div class="logo-box">
+        <span class="logo-text">Crea Vedio Admin</span>
+    </div>
+    <div class="nav-menu">
+        <div class="nav-item active" onclick="switchPage('users')">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            用户管理
+        </div>
+        <div class="nav-item" onclick="switchPage('logs')">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            流水记录
+        </div>
+        <div class="nav-item" onclick="switchPage('invites')">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+            邀请码管理
+        </div>
+        <div class="nav-item" onclick="switchPage('library')">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            音色库管理
+        </div>
+    </div>
+</div>
+
+<!-- 主内容 -->
+<div class="main-content">
+    <div class="top-header">
+        <div class="page-title" id="pageTitle">用户管理</div>
+        <div style="display:flex; align-items:center;">
+            <div class="theme-toggle" onclick="toggleTheme()" title="切换深色模式">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="theme-icon">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </div>
+            <div class="user-info">
+                <span>管理员</span>
+                <div class="avatar">A</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-scroll">
+        
+        <!-- 页面 1: 用户管理 -->
+        <div id="view-users" class="page-view active">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">用户列表</div>
+                    <div style="display: flex; gap: 12px;">
+                        <input type="text" placeholder="搜索 UID 或手机号...">
+                        <button class="btn btn-primary" onclick="toast('搜索中...')">搜索</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>UID</th>
+                            <th>用户信息</th>
+                            <th>积分余量 / 到期日</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="user-1001">
+                            <td>1001</td>
+                            <td>
+                                <div style="font-weight: 600;">13800138000</div>
+                                <div style="font-size: 12px; color: var(--text-sub);">注册: 2026-01-01</div>
+                            </td>
+                            <td>
+                                <span style="font-weight: 700; color: #0f172a;">2,450 pts</span>
+                                <span style="display: block; font-size: 12px; color: var(--text-sub); margin-top: 4px;">有效期至: 2026-12-31</span>
+                            </td>
+                            <td><span class="badge badge-success" id="status-1001">● 正常</span></td>
+                            <td>
+                                <span class="action-link" onclick="openModifyModal('1001', 2450)">修改积分</span>
+                                <span class="action-link link-danger" onclick="toggleFreeze('1001')">冻结</span>
+                            </td>
+                        </tr>
+                        <tr id="user-1002">
+                            <td>1002</td>
+                            <td>
+                                <div style="font-weight: 600;">13912345678</div>
+                                <div style="font-size: 12px; color: var(--text-sub);">注册: 2026-01-14</div>
+                            </td>
+                            <td>
+                                <span style="font-weight: 700; color: #0f172a;">12 pts</span>
+                                <span style="display: block; font-size: 12px; color: var(--text-sub); margin-top: 4px;">有效期至: 2026-03-01</span>
+                            </td>
+                            <td><span class="badge badge-success" id="status-1002">● 正常</span></td>
+                            <td>
+                                <span class="action-link" onclick="openModifyModal('1002', 12)">修改积分</span>
+                                <span class="action-link link-danger" onclick="toggleFreeze('1002')">冻结</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <span class="page-info">共 245 条，1/25 页</span>
+                    <button class="page-btn" disabled>&lt;</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">...</button>
+                    <button class="page-btn">25</button>
+                    <button class="page-btn">&gt;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面 2: 流水记录 -->
+        <div id="view-logs" class="page-view">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">全站流水明细</div>
+                    <button class="btn btn-ghost" onclick="exportLogs()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        导出报表
+                    </button>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid var(--border); background: #fafbfc; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <!-- 增加 onclick 触发 showPicker，优化点击区域 -->
+                        <input type="date" id="dateStart" placeholder="开始日期" onclick="try{this.showPicker()}catch(e){}">
+                        <span style="color: var(--text-sub)">至</span>
+                        <input type="date" id="dateEnd" placeholder="结束日期" onclick="try{this.showPicker()}catch(e){}">
+                    </div>
+                    <input type="text" id="searchUid" placeholder="用户 UID" style="width: 120px;">
+                    <select id="searchType">
+                        <option value="">所有类型</option>
+                        <option value="系统激活">系统激活</option>
+                        <option value="语音生成">语音生成</option>
+                        <option value="后台修改">后台修改</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="filterLogs()">查询</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>交易时间</th>
+                            <th>UID</th>
+                            <th>业务描述</th>
+                            <th>数额变动</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsTableBody">
+                        <!-- 内容由 JS 动态生成 -->
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <span class="page-info">共 1,204 条，1/121 页</span>
+                    <button class="page-btn" disabled>&lt;</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">...</button>
+                    <button class="page-btn">121</button>
+                    <button class="page-btn">&gt;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面 3: 邀请码管理 -->
+        <div id="view-invites" class="page-view">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">邀请码生成器</div>
+                </div>
+                <div class="invite-section">
+                    <p style="color: var(--text-sub); margin-bottom: 16px;">点击下方按钮生成新的激活邀请码</p>
+                    <div id="inviteCodeDisplay">--------</div>
+                    <div style="display: flex; gap: 16px;">
+                        <button class="btn btn-primary" onclick="generateNewInviteCode()" style="padding: 12px 32px; font-size: 16px;">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            生成新码
+                        </button>
+                        <button class="btn btn-ghost" onclick="copyInviteCode()" style="padding: 12px 32px; font-size: 16px;">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            复制
+                        </button>
+                    </div>
+                </div>
+                <!-- 模拟历史记录 -->
+                <div class="card-header" style="border-top: 1px solid var(--border);">
+                    <div class="card-title" style="font-size: 16px;">最近生成记录</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>邀请码</th>
+                            <th>生成时间</th>
+                            <th>状态</th>
+                            <th>使用用户</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inviteHistory">
+                        <tr>
+                            <td style="font-family: monospace; font-weight: 600;">K8J2-9LPA</td>
+                            <td>2026-01-22 10:30</td>
+                            <td><span class="badge badge-success">未使用</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td style="font-family: monospace; font-weight: 600;">M3N5-X7YZ</td>
+                            <td>2026-01-21 15:45</td>
+                            <td><span class="badge" style="background:#f1f5f9; color:#64748b">已使用</span></td>
+                            <td>1003</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <span class="page-info">共 58 条，1/6 页</span>
+                    <button class="page-btn" disabled>&lt;</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">...</button>
+                    <button class="page-btn">6</button>
+                    <button class="page-btn">&gt;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面 4: 音色库管理 -->
+        <div id="view-library" class="page-view">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">资源库配置</div>
+                    <button class="btn btn-primary" onclick="openLibraryModal()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        添加项目
+                    </button>
+                </div>
+                <div style="padding: 24px;">
+                    <div class="lib-tabs">
+                        <div class="lib-tab active" onclick="switchLibTab('voices')">音色库 (Voices)</div>
+                        <div class="lib-tab" onclick="switchLibTab('emotions')">情绪库 (Emotions)</div>
+                    </div>
+                    
+                    <div id="lib-grid-container" class="lib-grid">
+                        <!-- Dynamic Content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 修改积分弹窗 -->
+<div class="modal-overlay" id="modifyModal">
+    <div class="modal-card">
+        <h3 style="margin-bottom: 24px;">修改用户积分 - <span id="modalUid"></span></h3>
+        <div class="form-item">
+            <label>当前积分</label>
+            <input type="text" id="currentPoints" disabled style="background: #f1f5f9;">
+        </div>
+        <div class="form-item">
+            <label>调整至</label>
+            <input type="number" id="newPoints">
+        </div>
+        <div style="text-align: right; margin-top: 32px;">
+            <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+            <button class="btn btn-primary" onclick="saveModify()">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- 资源库编辑弹窗 -->
+<div class="modal-overlay" id="libraryModal">
+    <div class="modal-card">
+        <h3 style="margin-bottom: 24px;" id="libModalTitle">添加项目</h3>
+        <div class="form-item">
+            <label>名称</label>
+            <input type="text" id="libName" placeholder="例如：沉稳高管">
+        </div>
+        <div class="form-item">
+            <label>标签 (Tag)</label>
+            <input type="text" id="libTag" placeholder="例如：商务 · 中文">
+        </div>
+        <div class="form-item">
+            <label>描述</label>
+            <input type="text" id="libDesc" placeholder="简短描述...">
+        </div>
+        <div class="form-item">
+            <label>图标色系</label>
+            <div class="color-sel-group">
+                <div class="color-sel v-blue selected" onclick="selectLibColor('v-blue', this)"></div>
+                <div class="color-sel v-pink" onclick="selectLibColor('v-pink', this)"></div>
+                <div class="color-sel v-orange" onclick="selectLibColor('v-orange', this)"></div>
+                <div class="color-sel v-purple" onclick="selectLibColor('v-purple', this)"></div>
+            </div>
+        </div>
+        <div style="text-align: right; margin-top: 32px;">
+            <button class="btn btn-ghost" onclick="closeLibraryModal()">取消</button>
+            <button class="btn btn-primary" onclick="saveLibraryItem()">保存</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    console.log('Script initialized');
+    
+    // 全局分页实例容器
+    window.pagers = {};
+
+    // 点击外部关闭下拉菜单
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.page-size-wrapper')) {
+            document.querySelectorAll('.page-size-wrapper').forEach(el => el.classList.remove('open'));
+        }
+    });
+
+    // ================= 分页管理器类 =================
+    class PaginationManager {
+        constructor(viewId, data, pageSize = 10, renderRowFn) {
+            this.viewId = viewId;
+            this.container = document.querySelector('#' + viewId + ' .pagination');
+            this.tableBody = document.querySelector('#' + viewId + ' tbody');
+            this.allData = data;
+            this.pageSize = pageSize;
+            this.currentPage = 1;
+            this.renderRowFn = renderRowFn;
+            
+            // 注册到全局
+            window.pagers[viewId] = this;
+            this.render();
+        }
+
+        get totalPages() {
+            return Math.ceil(this.allData.length / this.pageSize) || 1;
+        }
+
+        // 更新数据源（例如筛选后）
+        updateData(newData) {
+            this.allData = newData;
+            this.currentPage = 1;
+            this.render();
+        }
+
+        goToPage(page) {
+            if (isNaN(page)) return;
+            if (page < 1) page = 1;
+            if (page > this.totalPages) page = this.totalPages;
+            this.currentPage = page;
+            this.render();
+        }
+
+        setPageSize(size) {
+            this.pageSize = parseInt(size);
+            this.currentPage = 1;
+            this.render();
+            // 关闭下拉
+            const wrapper = this.container.querySelector('.page-size-wrapper');
+            if(wrapper) wrapper.classList.remove('open');
+        }
+
+        render() {
+            // 1. 渲染表格内容
+            this.tableBody.innerHTML = '';
+            const start = (this.currentPage - 1) * this.pageSize;
+            const end = start + this.pageSize;
+            const currentData = this.allData.slice(start, end);
+            
+            if (currentData.length === 0) {
+                 const colCount = this.tableBody.closest('table').querySelectorAll('th').length;
+                 this.tableBody.innerHTML = `<tr><td colspan="${colCount}" style="text-align:center; color: var(--text-sub); padding: 40px;">暂无数据</td></tr>`;
+            } else {
+                currentData.forEach(item => {
+                    this.tableBody.appendChild(this.renderRowFn(item));
+                });
+            }
+
+            // 2. 渲染分页控件
+            this.renderPagination();
+        }
+
+        renderPagination() {
+            const total = this.allData.length;
+            const totalPages = this.totalPages;
+            const current = this.currentPage;
+
+            // 生成页码按钮逻辑
+            let pagesHtml = '';
+            const getPageBtn = (p, text) => `<button class="page-btn ${p === current ? 'active' : ''}" onclick="window.pagers['${this.viewId}'].goToPage(${p})">${text || p}</button>`;
+            const getEllipsis = () => `<span style="display:flex;align-items:center;padding:0 4px;">...</span>`;
+
+            if (totalPages <= 7) {
+                for (let i = 1; i <= totalPages; i++) pagesHtml += getPageBtn(i);
+            } else {
+                if (current <= 4) {
+                    for (let i = 1; i <= 5; i++) pagesHtml += getPageBtn(i);
+                    pagesHtml += getEllipsis();
+                    pagesHtml += getPageBtn(totalPages);
+                } else if (current >= totalPages - 3) {
+                    pagesHtml += getPageBtn(1);
+                    pagesHtml += getEllipsis();
+                    for (let i = totalPages - 4; i <= totalPages; i++) pagesHtml += getPageBtn(i);
+                } else {
+                    pagesHtml += getPageBtn(1);
+                    pagesHtml += getEllipsis();
+                    pagesHtml += getPageBtn(current - 1);
+                    pagesHtml += getPageBtn(current);
+                    pagesHtml += getPageBtn(current + 1);
+                    pagesHtml += getEllipsis();
+                    pagesHtml += getPageBtn(totalPages);
+                }
+            }
+
+            this.container.innerHTML = `
+                <div class="page-total">共 ${total} 条</div>
+                
+                <div class="page-size-wrapper">
+                    <div class="page-size-trigger" onclick="this.parentElement.classList.toggle('open'); event.stopPropagation();">
+                        <span>${this.pageSize}条/页</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="page-size-menu">
+                        ${[10, 20, 30, 50].map(size => 
+                            `<div class="page-size-option ${size === this.pageSize ? 'selected' : ''}" 
+                                onclick="window.pagers['${this.viewId}'].setPageSize(${size})">${size}条/页</div>`
+                        ).join('')}
+                    </div>
+                </div>
+
+                <div class="page-btn-group">
+                    <button class="page-btn" ${current === 1 ? 'disabled' : ''} onclick="window.pagers['${this.viewId}'].goToPage(${current - 1})">&lt;</button>
+                    ${pagesHtml}
+                    <button class="page-btn" ${current === totalPages ? 'disabled' : ''} onclick="window.pagers['${this.viewId}'].goToPage(${current + 1})">&gt;</button>
+                </div>
+
+                <div class="page-jump">
+                    前往 <input type="number" min="1" max="${totalPages}" value="${current}" 
+                        onkeydown="if(event.key==='Enter') window.pagers['${this.viewId}'].goToPage(parseInt(this.value))"
+                        onblur="window.pagers['${this.viewId}'].goToPage(parseInt(this.value))"
+                    > 页
+                </div>
+            `;
+        }
+    }
+
+    // ================= 数据生成与工具函数 =================
+    
+    function formatTime(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        const h = String(date.getHours()).padStart(2, '0');
+        const min = String(date.getMinutes()).padStart(2, '0');
+        return `${y}-${m}-${d} ${h}:${min}`;
+    }
+
+    // 1. 生成用户数据 (31条)
+    const usersData = Array.from({length: 31}, (_, i) => ({
+        uid: (1001 + i).toString(),
+        phone: '138' + String(Math.floor(Math.random()*100000000)).padStart(8, '0'),
+        regDate: '2026-01-' + String((i % 20) + 1).padStart(2, '0'),
+        pts: Math.floor(Math.random() * 5000),
+        endDate: '2026-12-31',
+        status: Math.random() > 0.95 ? 'frozen' : 'normal'
+    }));
+
+    // 2. 生成流水数据 (125条)
+    const logsData = Array.from({length: 125}, (_, i) => {
+        const isPos = Math.random() > 0.4;
+        return {
+            time: formatTime(new Date(Date.now() - Math.floor(Math.random() * 1000000000))),
+            uid: (1001 + Math.floor(Math.random() * 30)).toString(),
+            type: ['系统激活', '语音生成', '后台修改', '每日签到'][Math.floor(Math.random()*4)],
+            change: (isPos ? '+' : '-') + Math.floor(Math.random()*100),
+            changeClass: isPos ? 'amount-pos' : 'amount-neg',
+            status: '完成'
+        };
+    }).sort((a, b) => a.time < b.time ? 1 : -1);
+
+    // 3. 生成邀请码数据 (58条)
+    const invitesData = Array.from({length: 58}, (_, i) => ({
+        code: Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase(),
+        time: formatTime(new Date(Date.now() - Math.floor(Math.random() * 500000000))),
+        status: i < 10 ? 'used' : 'unused',
+        user: i < 10 ? (1001 + i).toString() : '-'
+    }));
+
+    // ================= 页面逻辑 =================
+
+    function switchPage(pageName) {
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        let activeIndex = 0;
+        if (pageName === 'logs') activeIndex = 1;
+        if (pageName === 'invites') activeIndex = 2;
+        if (pageName === 'library') activeIndex = 3;
+        
+        document.querySelectorAll('.nav-item')[activeIndex].classList.add('active');
+
+        const titles = { 'users': '用户管理', 'logs': '流水记录', 'invites': '邀请码管理', 'library': '资源库配置' };
+        document.getElementById('pageTitle').textContent = titles[pageName];
+
+        document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
+        document.getElementById('view-' + pageName).classList.add('active');
+        
+        if(pageName === 'library') renderLibrary();
+    }
+
+    // 渲染行函数 - 用户
+    function renderUserRow(item) {
+        const tr = document.createElement('tr');
+        tr.id = 'user-' + item.uid;
+        const isFrozen = item.status === 'frozen';
+        tr.innerHTML = `
+            <td>${item.uid}</td>
+            <td>
+                <div style="font-weight: 600;">${item.phone}</div>
+                <div style="font-size: 12px; color: var(--text-sub);">注册: ${item.regDate}</div>
+            </td>
+            <td>
+                <span style="font-weight: 700; color: #0f172a;">${item.pts.toLocaleString()} pts</span>
+                <span style="display: block; font-size: 12px; color: var(--text-sub); margin-top: 4px;">有效期至: ${item.endDate}</span>
+            </td>
+            <td><span class="badge ${isFrozen ? 'badge-frozen' : 'badge-success'}" id="status-${item.uid}">${isFrozen ? '● 已冻结' : '● 正常'}</span></td>
+            <td>
+                <span class="action-link" onclick="openModifyModal('${item.uid}', ${item.pts})">修改积分</span>
+                <span class="action-link link-danger" onclick="toggleFreeze('${item.uid}')">${isFrozen ? '解除冻结' : '冻结'}</span>
+            </td>
+        `;
+        return tr;
+    }
+
+    // 渲染行函数 - 流水
+    function renderLogRow(item) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${item.time}</td>
+            <td>${item.uid}</td>
+            <td>${item.type}</td>
+            <td><span class="${item.changeClass}">${item.change} pts</span></td>
+            <td>${item.status}</td>
+        `;
+        return tr;
+    }
+
+    // 渲染行函数 - 邀请码
+    function renderInviteRow(item) {
+        const tr = document.createElement('tr');
+        const isUsed = item.status === 'used';
+        tr.innerHTML = `
+            <td style="font-family: monospace; font-weight: 600;">${item.code}</td>
+            <td>${item.time}</td>
+            <td><span class="badge ${isUsed ? '' : 'badge-success'}" style="${isUsed ? 'background:#f1f5f9; color:#64748b' : ''}">${isUsed ? '已使用' : '未使用'}</span></td>
+            <td>${item.user}</td>
+        `;
+        return tr;
+    }
+
+    // 筛选流水
+    function filterLogs() {
+        const dateStart = document.getElementById('dateStart').value;
+        const dateEnd = document.getElementById('dateEnd').value;
+        const searchUid = document.getElementById('searchUid').value.trim();
+        const searchType = document.getElementById('searchType').value;
+
+        const filtered = logsData.filter(item => {
+            const itemDate = item.time.split(' ')[0];
+            if (dateStart && itemDate < dateStart) return false;
+            if (dateEnd && itemDate > dateEnd) return false;
+            if (searchUid && !item.uid.includes(searchUid)) return false;
+            if (searchType && item.type !== searchType) return false;
+            return true;
+        });
+
+        window.pagers['view-logs'].updateData(filtered);
+        toast('查询完成，共 ' + filtered.length + ' 条记录');
+    }
+
+    // 导出流水 (基于当前全部数据或筛选数据，这里简化为导出当前分页器中的数据源)
+    function exportLogs() {
+        const dataToExport = window.pagers['view-logs'].allData;
+        if(dataToExport.length === 0) return toast('无数据可导出');
+        
+        toast('正在导出...');
+        setTimeout(() => {
+            let csvContent = "data:text/csv;charset=utf-8,交易时间,UID,业务描述,数额变动,状态\n";
+            dataToExport.forEach(row => {
+                csvContent += `${row.time},${row.uid},${row.type},${row.change},${row.status}\n`;
+            });
+            const a = document.createElement('a');
+            a.href = encodeURI(csvContent);
+            a.download = `流水导出_${new Date().getTime()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            toast('导出成功');
+        }, 800);
+    }
+
+    // 邀请码相关
+    function generateNewInviteCode() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let code = '';
+        for (let i = 0; i < 8; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+        const formatted = code.substring(0,4) + '-' + code.substring(4);
+        
+        const display = document.getElementById('inviteCodeDisplay');
+        display.style.opacity = 0;
+        setTimeout(() => {
+            display.textContent = formatted;
+            display.style.opacity = 1;
+            display.style.transform = 'scale(1.1)';
+            setTimeout(() => display.style.transform = 'scale(1)', 200);
+            
+            // 添加到数据源并刷新
+            const newInvite = {
+                code: formatted,
+                time: formatTime(new Date()),
+                status: 'unused',
+                user: '-'
+            };
+            invitesData.unshift(newInvite);
+            window.pagers['view-invites'].updateData(invitesData);
+            
+            toast('新邀请码已生成');
+        }, 200);
+    }
+    
+    function copyInviteCode() {
+        const text = document.getElementById('inviteCodeDisplay').textContent;
+        if(text.includes('---')) return toast('请先生成邀请码');
+        navigator.clipboard.writeText(text).then(() => toast('已复制'));
+    }
+
+    // 用户操作相关
+    let activeUid = '';
+    let currentPts = 0;
+
+    function openModifyModal(uid, current) {
+        activeUid = uid;
+        currentPts = parseInt(current);
+        document.getElementById('modalUid').textContent = uid;
+        document.getElementById('currentPoints').value = currentPts.toLocaleString();
+        document.getElementById('newPoints').value = currentPts;
+        document.getElementById('modifyModal').classList.add('open');
+    }
+
+    function closeModal() {
+        document.getElementById('modifyModal').classList.remove('open');
+    }
+
+    function saveModify() {
+        const newVal = document.getElementById('newPoints').value;
+        if (newVal === '') return toast('请输入数值');
+        const newPoints = parseInt(newVal);
+        if (isNaN(newPoints) || newPoints < 0) return toast('请输入有效的正整数');
+
+        // 更新数据源
+        const user = usersData.find(u => u.uid === activeUid);
+        if(user) {
+            user.pts = newPoints;
+            // 刷新当前页
+            window.pagers['view-users'].render();
+            
+            // 记录流水
+            const diff = newPoints - currentPts;
+            if(diff !== 0) {
+                const log = {
+                    time: formatTime(new Date()),
+                    uid: activeUid,
+                    type: '后台修改',
+                    change: (diff > 0 ? '+' : '') + diff,
+                    changeClass: diff > 0 ? 'amount-pos' : 'amount-neg',
+                    status: '完成'
+                };
+                logsData.unshift(log);
+                if(window.pagers['view-logs']) window.pagers['view-logs'].updateData(logsData);
+            }
+            toast(`用户 ${activeUid} 积分已更新`);
+            closeModal();
+        }
+    }
+
+    function toggleFreeze(uid) {
+        const user = usersData.find(u => u.uid === uid);
+        if(!user) return;
+        
+        if (user.status === 'normal') {
+            if(confirm('确认冻结该用户？')) {
+                user.status = 'frozen';
+                toast('用户已冻结');
+            }
+        } else {
+            user.status = 'normal';
+            toast('用户已恢复正常');
+        }
+        window.pagers['view-users'].render();
+    }
+
+    function toast(msg) {
+        const div = document.createElement('div');
+        div.style.cssText = `
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #1e293b; color: white; padding: 12px 24px; border-radius: 99px;
+            font-size: 14px; z-index: 2000; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s forwards;
+        `;
+        div.textContent = msg;
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 2000);
+    }
+
+    // ================= 资源库管理逻辑 =================
+    
+    const defaultVoices = [
+        { id: 'v1', name: '沉稳高管', tag: '商务 · 中文', desc: '低沉厚实，磁性，从容不迫', color: 'v-blue' },
+        { id: 'v2', name: '新闻女声', tag: '播音 · 快速', desc: '明亮圆润，干练利落，新闻现场感', color: 'v-pink' },
+        { id: 'v3', name: '有声书男', tag: '磁性 · 叙述', desc: '富有故事感，适合长篇阅读', color: 'v-orange' }
+    ];
+
+    const defaultEmotions = [
+        { id: 'e1', name: '新闻女声', tag: '标准口音', desc: '端庄大气的女声，声线明亮圆润且富有知性美', color: 'v-pink', tags: ['中文-普通话', '标准口音'] },
+        { id: 'e2', name: '港普空姐', tag: '中国-南方', desc: '清脆明亮，快言快语，直爽且真实', color: 'v-orange', tags: ['中文-普通话', '中国-南方'] },
+        { id: 'e3', name: '沉稳高管', tag: '标准口音', desc: '沉稳干练的男声，低沉厚实且自带磁性', color: 'v-blue', tags: ['中文-普通话', '标准口音'] },
+        { id: 'e4', name: '不羁青年', tag: '标准口音', desc: '极具辨识度的青年男声，低沉磁性且略带冷冽', color: 'v-purple', tags: ['中文-普通话', '标准口音'] }
+    ];
+
+    let currentLibTab = 'voices';
+    let editingLibId = null;
+    let selectedLibColor = 'v-blue';
+
+    function getLibData(type) {
+        const key = type === 'voices' ? 'tts_voice_lib' : 'tts_emotion_lib';
+        const defaults = type === 'voices' ? defaultVoices : defaultEmotions;
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : defaults;
+    }
+
+    function saveLibData(type, data) {
+        const key = type === 'voices' ? 'tts_voice_lib' : 'tts_emotion_lib';
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    function renderLibrary() {
+        const container = document.getElementById('lib-grid-container');
+        const data = getLibData(currentLibTab);
+        
+        container.innerHTML = data.map(item => `
+            <div class="lib-card-item">
+                <div class="lib-card-header">
+                    <div class="lib-icon ${item.color || 'v-blue'}">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path></svg>
+                    </div>
+                    <div class="lib-info">
+                        <div class="lib-name">${item.name}</div>
+                        <div class="lib-tag">${item.tag || ''}</div>
+                    </div>
+                </div>
+                <div class="lib-desc">${item.desc || '暂无描述'}</div>
+                <div class="lib-actions">
+                    <div class="btn-icon" onclick="openLibraryModal('${item.id}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </div>
+                    <div class="btn-icon danger" onclick="deleteLibraryItem('${item.id}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function switchLibTab(tab) {
+        currentLibTab = tab;
+        document.querySelectorAll('.lib-tab').forEach(t => t.classList.remove('active'));
+        // Find the clicked tab (event.target might not work if called programmatically, but here it's fine via onclick)
+        const tabs = document.querySelectorAll('.lib-tab');
+        if(tab === 'voices') tabs[0].classList.add('active');
+        else tabs[1].classList.add('active');
+        renderLibrary();
+    }
+
+    function openLibraryModal(id = null) {
+        const modal = document.getElementById('libraryModal');
+        const title = document.getElementById('libModalTitle');
+        
+        // Reset
+        document.getElementById('libName').value = '';
+        document.getElementById('libTag').value = '';
+        document.getElementById('libDesc').value = '';
+        selectLibColor('v-blue', document.querySelector('.color-sel.v-blue'));
+
+        if (id) {
+            editingLibId = id;
+            title.textContent = currentLibTab === 'voices' ? '编辑音色' : '编辑情绪';
+            const data = getLibData(currentLibTab);
+            const item = data.find(i => i.id === id);
+            if(item) {
+                document.getElementById('libName').value = item.name;
+                document.getElementById('libTag').value = item.tag;
+                document.getElementById('libDesc').value = item.desc;
+                const colorEl = document.querySelector(`.color-sel.${item.color}`);
+                if(colorEl) selectLibColor(item.color, colorEl);
+            }
+        } else {
+            editingLibId = null;
+            title.textContent = currentLibTab === 'voices' ? '添加新音色' : '添加新情绪';
+        }
+        modal.classList.add('open');
+    }
+
+    function closeLibraryModal() {
+        document.getElementById('libraryModal').classList.remove('open');
+    }
+
+    function selectLibColor(color, el) {
+        selectedLibColor = color;
+        document.querySelectorAll('.color-sel').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function saveLibraryItem() {
+        const name = document.getElementById('libName').value;
+        const tag = document.getElementById('libTag').value;
+        const desc = document.getElementById('libDesc').value;
+        
+        if(!name) return toast('请输入名称');
+
+        let data = getLibData(currentLibTab);
+        const newItem = {
+            id: editingLibId || Date.now().toString(),
+            name, tag, desc,
+            color: selectedLibColor,
+            tags: tag.split(' ').filter(t => t) // simple split for tags
+        };
+
+        if(editingLibId) {
+            const idx = data.findIndex(i => i.id === editingLibId);
+            if(idx > -1) data[idx] = newItem;
+        } else {
+            data.push(newItem);
+        }
+
+        saveLibData(currentLibTab, data);
+        renderLibrary();
+        closeLibraryModal();
+        toast('保存成功');
+    }
+
+    function deleteLibraryItem(id) {
+        if(!confirm('确定要删除吗？')) return;
+        let data = getLibData(currentLibTab);
+        data = data.filter(i => i.id !== id);
+        saveLibData(currentLibTab, data);
+        renderLibrary();
+        toast('已删除');
+    }
+
+    // 初始化
+    window.onload = function() {
+        console.log('Window loaded - Initializing Pagination');
+        
+        // 1. 初始化用户列表分页
+        new PaginationManager('view-users', usersData, 10, renderUserRow);
+        
+        // 2. 初始化流水记录分页
+        new PaginationManager('view-logs', logsData, 10, renderLogRow);
+        
+        // 3. 初始化邀请码分页
+        new PaginationManager('view-invites', invitesData, 10, renderInviteRow);
+
+        // Check URL param
+        const urlParams = new URLSearchParams(window.location.search);
+        const page = urlParams.get('page');
+        if (page && ['users', 'logs', 'invites', 'library'].includes(page)) {
+            switchPage(page);
+        }
+    }
+
+    // Theme Management
+    function toggleTheme() {
+        const html = document.documentElement;
+        const isDark = html.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeIcon(isDark);
+    }
+
+    function updateThemeIcon(isDark) {
+        const iconContainer = document.getElementById('theme-icon');
+        if (isDark) {
+            // Sun Icon
+            iconContainer.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+        } else {
+            // Moon Icon
+            iconContainer.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        }
+    }
+
+    // Init Theme
+    (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.documentElement.classList.add('dark-mode');
+            // Wait for DOMContentLoaded to update icon if element not ready, 
+            // but script is at bottom so it should be fine.
+            const icon = document.getElementById('theme-icon');
+            if(icon) updateThemeIcon(true);
+        }
+    })();
+</script>
+
+</body>
+</html>

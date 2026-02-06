@@ -92,6 +92,19 @@ export function useUserPage() {
   ); // 匹配 voice.id 的类型
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
 
+  // 当前会话生成的音频列表
+  interface GeneratedAudio {
+    id: string;
+    audioUrl: string;
+    text: string;
+    voiceName?: string;
+    creditsUsed?: number;
+    createdAt: number;
+  }
+  const [generatedAudios, setGeneratedAudios] = useState<GeneratedAudio[]>([]);
+  const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
+  const [currentAudioPlayer, setCurrentAudioPlayer] = useState<HTMLAudioElement | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [uploadingClone, setUploadingClone] = useState(false);
   const [uploadingEmo, setUploadingEmo] = useState(false);
@@ -354,10 +367,61 @@ export function useUserPage() {
       });
 
       await loadHistory();
+
+      // 添加到当前会话生成的音频列表
+      const audioUrl = typeof result === 'string' ? result : result?.audio_url;
+      const creditsUsed = result && typeof result === 'object' ? (result as any).credits_used : undefined;
+      if (audioUrl) {
+        const newAudio: GeneratedAudio = {
+          id: `audio-${Date.now()}`,
+          audioUrl,
+          text: text,
+          voiceName: mode === "library" ? selectedVoice?.name : undefined,
+          creditsUsed,
+          createdAt: Date.now(),
+        };
+        setGeneratedAudios(prev => [newAudio, ...prev]);
+      }
+
       // 返回结果，供页面展示播放器（接口只返回音频 url，需能直接播放）
       return result;
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 播放生成的音频
+  const handlePlayGeneratedAudio = (audio: GeneratedAudio) => {
+    // 停止当前播放的音频
+    if (currentAudioPlayer) {
+      currentAudioPlayer.pause();
+      setCurrentAudioPlayer(null);
+    }
+    setPlayingAudioId(null);
+
+    // 如果点击的是正在播放的音频，则停止播放
+    if (playingAudioId === audio.id) {
+      return;
+    }
+
+    // 播放新音频
+    const newAudio = new Audio(audio.audioUrl);
+    setCurrentAudioPlayer(newAudio);
+    setPlayingAudioId(audio.id);
+    newAudio.play();
+    newAudio.onended = () => {
+      setPlayingAudioId(null);
+      setCurrentAudioPlayer(null);
+    };
+  };
+
+  // 删除生成的音频
+  const handleRemoveGeneratedAudio = (id: string) => {
+    setGeneratedAudios(prev => prev.filter(audio => audio.id !== id));
+    if (playingAudioId === id) {
+      currentAudioPlayer?.pause();
+      setCurrentAudioPlayer(null);
+      setPlayingAudioId(null);
     }
   };
 
@@ -458,6 +522,9 @@ export function useUserPage() {
     loadingVoices,
     hasMoreVoices,
     playingVoiceId,
+    // generated audios
+    generatedAudios,
+    playingAudioId,
     // actions
     loadUserInfo,
     loadVoices,
@@ -473,6 +540,8 @@ export function useUserPage() {
     handlePlayEmoRef,
     handleSubmit,
     handlePreviewVoice,
+    handlePlayGeneratedAudio,
+    handleRemoveGeneratedAudio,
     // invite code / logout confirm
     inviteModalOpen,
     openInviteModal,
