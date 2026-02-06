@@ -1139,9 +1139,58 @@ header {
 .v-pink { background: #db2777; color: #ffffff; }
 .v-orange { background: #ea580c; color: #ffffff; }
 .v-purple { background: #9333ea; color: #ffffff; }
-.voice-info { flex: 1; min-width: 0; }
-.voice-name { font-size: 0.9rem; font-weight: 500; color: var(--text-main); margin-bottom: 2px;}
-.voice-tag { font-size: 0.75rem; color: var(--text-sub); display: inline-flex; align-items: center; gap: 4px;}
+.voice-info {
+    flex: 1;
+    min-width: 0;
+    max-height: 80px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 4px;
+    /* 自定义滚动条 */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+.voice-info::-webkit-scrollbar {
+    width: 4px;
+}
+.voice-info::-webkit-scrollbar-track {
+    background: transparent;
+}
+.voice-info::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+}
+.voice-info::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+.voice-card.active .voice-info::-webkit-scrollbar-thumb {
+    background: var(--primary);
+}
+.voice-card.active .voice-info::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+.voice-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+.voice-tag {
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    word-break: break-word;
+}
 
 /* Main Stage — 单列滚动，滚动条可见 */
 /* 中间列：整列可滚动，滚到底即可点「立即生成」 */
@@ -1288,6 +1337,132 @@ header {
 .submit-msg-credits { font-size: 0.9rem; color: var(--text-sub); margin-bottom: 8px; }
 .submit-msg-credits span { font-weight: 600; color: var(--primary); }
 .submit-msg-audio { width: 100%; height: 40px; }
+
+/* 自定义音频播放器样式 */
+.custom-audio-player audio {
+  display: none !important;
+}
+
+.custom-audio-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.custom-audio-play-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.custom-audio-play-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.custom-audio-play-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.custom-audio-play-btn .spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.custom-audio-progress-wrap {
+  flex: 1;
+  height: 16px;
+  border-radius: 8px;
+  position: relative;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.custom-audio-progress {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+}
+
+.custom-audio-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--primary);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: transform 0.1s;
+}
+
+.custom-audio-progress::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.custom-audio-progress::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--primary);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.custom-audio-progress:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.custom-audio-time {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  font-variant-numeric: tabular-nums;
+  min-width: 80px;
+  justify-content: flex-end;
+}
+
+.custom-audio-time-current {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.custom-audio-time-separator {
+  color: var(--text-sub);
+}
+
+.custom-audio-time-total {
+  color: var(--text-sub);
+}
+
 .submit-msg-box__btn {
     padding: 10px 32px;
     border-radius: 10px;
@@ -1535,4 +1710,385 @@ header {
 .action-icon:hover {
     color: var(--primary);
 }
-    
+
+/* ========== 移动端响应式适配 ========== */
+
+/* 移动端汉堡菜单按钮 */
+.mobile-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-right: 8px;
+    color: var(--text-main);
+    transition: color 0.2s;
+}
+.mobile-menu-btn:hover {
+    color: var(--primary);
+}
+.mobile-menu-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* 移动端侧边栏遮罩 */
+.mobile-sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+/* 移动端侧边栏关闭按钮 */
+.mobile-sidebar-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--text-sub);
+    transition: color 0.2s, background 0.2s;
+    border-radius: 6px;
+}
+.mobile-sidebar-close:hover {
+    color: var(--danger);
+    background: rgba(239, 68, 68, 0.1);
+}
+.mobile-sidebar-close svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* 平板尺寸 (768px 及以下) */
+@media (max-width: 768px) {
+    /* 显示汉堡菜单 */
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    /* 显示侧边栏关闭按钮 */
+    .mobile-sidebar-close {
+        display: flex;
+    }
+
+    /* 调整 logo */
+    header {
+        padding: 0 16px;
+        height: 56px;
+        justify-content: flex-start;
+    }
+    .logo {
+        font-size: 1rem;
+    }
+    .logo-badge {
+        font-size: 0.65rem;
+        padding: 2px 4px;
+    }
+    .avatar {
+        width: 36px;
+        height: 36px;
+        margin-left: auto;
+    }
+    .credits-val {
+        font-size: 0.8rem;
+    }
+    .credits-exp {
+        font-size: 0.65rem;
+    }
+
+    /* workspace 布局 */
+    .workspace {
+        grid-template-columns: 1fr;
+        position: relative;
+    }
+
+    /* 侧边栏默认隐藏，作为抽屉式 */
+    .panel {
+        display: none !important;
+    }
+
+    /* 左侧边栏（音色库）作为抽屉 */
+    .panel:first-child {
+        display: flex !important;
+        position: fixed;
+        top: 56px;
+        left: -320px;
+        width: 320px;
+        height: calc(100vh - 56px);
+        z-index: 101;
+        background: #fff;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        transition: left 0.3s ease;
+    }
+
+    /* 侧边栏打开状态 */
+    .panel:first-child.mobile-sidebar-open {
+        left: 0;
+    }
+
+    /* 显示遮罩 */
+    .mobile-sidebar-overlay {
+        display: block;
+    }
+
+    /* 调整中间内容区 */
+    .stage-scroll {
+        height: calc(100vh - 56px);
+    }
+    .stage-container {
+        padding: 12px 16px 20px;
+        max-width: 100%;
+    }
+    .card-body {
+        padding: 16px;
+    }
+    .control-card {
+        margin-bottom: 16px;
+    }
+
+    /* 调整顶部标签 */
+    .top-tab {
+        padding: 12px;
+        font-size: 0.85rem;
+    }
+
+    /* 调整上传区域 */
+    .upload-area {
+        padding: 20px 16px;
+        min-height: 120px;
+    }
+    .upload-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* 调整滑块 */
+    .bp-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .bp-label {
+        font-size: 0.85rem;
+    }
+
+    /* 调整文本框 */
+    .main-textarea {
+        font-size: 0.95rem;
+        padding: 12px;
+    }
+
+    /* 调整按钮 */
+    .btn-primary {
+        padding: 14px;
+        font-size: 0.95rem;
+    }
+
+    /* 确保生成按钮区域可见 */
+    .composer-actions {
+        padding: 12px 0 20px;
+        position: sticky;
+        bottom: 0;
+        background: var(--bg-body);
+        z-index: 10;
+    }
+
+    /* 调整模态框 */
+    .modal-card {
+        width: 100%;
+        max-width: calc(100% - 32px);
+        margin: 16px;
+        padding: 16px;
+    }
+}
+
+/* 手机尺寸 (480px 及以下) */
+@media (max-width: 480px) {
+    .mobile-menu-btn {
+        width: 36px;
+        height: 36px;
+    }
+    .mobile-menu-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* 进一步缩小 header */
+    header {
+        padding: 0 12px;
+        height: 52px;
+    }
+    .logo {
+        font-size: 0.95rem;
+        gap: 8px;
+    }
+    .logo-badge {
+        display: none;
+    }
+    .logo svg {
+        width: 24px;
+        height: 24px;
+    }
+    .avatar {
+        width: 32px;
+        height: 32px;
+    }
+    .user-credits {
+        display: none;
+    }
+
+    /* 侧边栏 */
+    .panel:first-child {
+        top: 52px;
+        left: -280px;
+        width: 280px;
+        height: calc(100vh - 52px);
+    }
+
+    /* 调整内容区 */
+    .stage-scroll {
+        height: calc(100vh - 52px);
+    }
+    .stage-container {
+        padding: 10px 12px 16px;
+    }
+
+    /* 调整卡片 */
+    .card-body {
+        padding: 12px;
+    }
+    .control-card {
+        margin-bottom: 12px;
+        border-radius: 12px;
+    }
+
+    /* 调整标签 */
+    .top-tab {
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+
+    /* 调整情感标签 */
+    .emotion-tab {
+        min-height: 40px;
+        padding: 0 12px;
+        font-size: 0.85rem;
+    }
+
+    /* 调整上传区域 */
+    .upload-area {
+        padding: 16px 12px;
+        min-height: 100px;
+    }
+    .upload-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* 调整滑块 */
+    .slider::-webkit-slider-thumb {
+        width: 18px;
+        height: 18px;
+    }
+    .slider::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* 调整文本框 */
+    .main-textarea {
+        font-size: 0.9rem;
+        padding: 10px;
+        min-height: 120px;
+    }
+
+    /* 调整按钮 */
+    .btn-primary {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    .generate-btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    /* 确保生成按钮可见 */
+    .composer-actions {
+        padding: 10px 0 16px;
+    }
+
+    /* 调整模态框 */
+    .modal-card {
+        margin: 12px;
+        padding: 14px;
+        border-radius: 12px;
+    }
+    .modal-card__title {
+        font-size: 1rem;
+    }
+    .modal-card__desc {
+        font-size: 0.85rem;
+    }
+    .modal-input {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+    .modal-btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* 超小屏幕 (360px 及以下) */
+@media (max-width: 360px) {
+    header {
+        padding: 0 8px;
+        height: 48px;
+    }
+    .logo {
+        font-size: 0.85rem;
+    }
+    .logo svg {
+        width: 20px;
+        height: 20px;
+    }
+    .panel:first-child {
+        top: 48px;
+        width: 260px;
+        height: calc(100vh - 48px);
+        left: -260px;
+    }
+    .stage-scroll {
+        height: calc(100vh - 48px);
+    }
+    .stage-container {
+        padding: 8px 10px 14px;
+    }
+    .card-body {
+        padding: 10px;
+    }
+    .top-tab {
+        padding: 8px;
+        font-size: 0.75rem;
+    }
+    .main-textarea {
+        font-size: 0.85rem;
+        padding: 8px;
+    }
+    .btn-primary {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+}

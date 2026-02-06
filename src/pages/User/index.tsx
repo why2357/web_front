@@ -8,6 +8,7 @@ import BasicParams from './components/BasicParams';
 import TextComposer from './components/TextComposer';
 import GenerateButton from './components/GenerateButton';
 import HistoryList from './components/HistoryList';
+import AudioPlayer from './components/AudioPlayer';
 
 // UI primitives (shared)
 import { Button, Modal } from '../../components/ui';
@@ -16,6 +17,7 @@ function User() {
   const ui = useUserPage();
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string; audioUrl?: string; creditsUsed?: number } | null>(null);
   const [cloneDragOver, setCloneDragOver] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!ui.filterOpen) return;
@@ -26,7 +28,27 @@ function User() {
 
   return (
     <div className="user-page">
+      {/* 移动端侧边栏遮罩 */}
+      {mobileSidebarOpen && (
+        <div className="mobile-sidebar-overlay" onClick={() => setMobileSidebarOpen(false)} />
+      )}
+
       <header>
+        {/* 移动端汉堡菜单按钮 */}
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+          aria-label="Toggle menu"
+        >
+          <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            {mobileSidebarOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+
         <div className="logo">
           <svg className="icon-lg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2ZM16 16C15.5 17.5 14 18 12 18C10 18 8.5 17.5 8 16C8.5 15.5 10 15 12 15C14 15 15.5 15.5 16 16ZM17 12C17 13.1046 16.1046 14 15 14C13.8954 14 13 13.1046 13 12C13 10.8954 13.8954 10 15 10C16.1046 10 17 10.8954 17 12ZM9 14C7.89543 14 7 13.1046 7 12C7 10.8954 7.89543 10 9 10C10.1046 10 11 10.8954 11 12C11 13.1046 10.1046 14 9 14Z" fill="currentColor"/></svg>
           <span>Crea Vedio</span>
@@ -70,9 +92,21 @@ function User() {
 
       <div className="workspace">
         {/* 左侧：音色库 */}
-        <aside className="panel">
+        <aside className={`panel ${mobileSidebarOpen ? 'mobile-sidebar-open' : ''}`}>
           <div className="panel-header panel-header--with-filter">
-            <h3>音色库</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <h3>音色库</h3>
+              {/* 移动端关闭按钮 */}
+              <button
+                className="mobile-sidebar-close"
+                onClick={() => setMobileSidebarOpen(false)}
+                aria-label="关闭"
+              >
+                <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
             <div className="filter-wrap">
               <button
                 type="button"
@@ -293,10 +327,14 @@ function User() {
                 {submitMessage.creditsUsed != null && (
                   <div className="submit-msg-credits">积分花费：<span>{submitMessage.creditsUsed}</span></div>
                 )}
-                <audio controls src={submitMessage.audioUrl} className="submit-msg-audio" />
+                <AudioPlayer src={submitMessage.audioUrl} className="submit-msg-audio" />
               </div>
             )}
-            <button type="button" className="submit-msg-box__btn" onClick={() => setSubmitMessage(null)} style={{ marginTop: 16 }}>
+            <button type="button" className="submit-msg-box__btn" onClick={async () => {
+              setSubmitMessage(null);
+              // 更新用户积分信息
+              await ui.loadUserInfo();
+            }} style={{ marginTop: 16 }}>
               确定
             </button>
           </div>

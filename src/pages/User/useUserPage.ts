@@ -373,6 +373,21 @@ export function useUserPage() {
     }
 
     try {
+      // 优先使用预设的试听音频（无延迟）
+      if (voice.audio_url) {
+        const newAudio = new Audio(voice.audio_url);
+        setAudioPlayer(newAudio);
+        setPlayingVoiceId(voice.id);
+        newAudio.play();
+        newAudio.onended = () => {
+          setPlayingVoiceId(null);
+          setAudioPlayer(null);
+        };
+        onPlay?.(voice.audio_url);
+        return;
+      }
+
+      // 如果没有预设音频，则使用生成接口（较慢）
       const previewText = "你好，欢迎使用文字转语音功能。";
       const result = await generateSpeech({
         text_content: previewText,
@@ -444,6 +459,7 @@ export function useUserPage() {
     hasMoreVoices,
     playingVoiceId,
     // actions
+    loadUserInfo,
     loadVoices,
     loadMoreVoices,
     loadHistory,

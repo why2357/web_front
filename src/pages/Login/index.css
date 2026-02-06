@@ -217,17 +217,131 @@
   color: #6b7280;
 }
 
-/* 响应式 */
+/* 响应式 - 平板 (768px 及以下) */
 @media (max-width: 768px) {
+  .login-container {
+    padding: 1rem;
+  }
+
   .login-card {
     flex-direction: column;
+    max-width: 100%;
   }
-  
+
   .brand-section {
-    padding: 2rem;
+    padding: 1.5rem;
   }
-  
+
   .brand-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+
+  .brand-description {
+    font-size: 0.9rem;
+  }
+
+  .form-section {
+    padding: 2rem 1.5rem;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+  }
+
+  .feature-icons {
+    gap: 1rem;
+  }
+}
+
+/* 响应式 - 手机 (480px 及以下) */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .login-card {
+    flex-direction: column;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 100vh;
+  }
+
+  /* 隐藏品牌区域以节省空间 */
+  .brand-section {
+    display: none;
+  }
+
+  .form-section {
+    padding: 1.5rem 1rem;
+    flex: 1;
+    justify-content: flex-start;
+    padding-top: 2rem;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .form-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-body {
+    gap: 0.875rem;
+  }
+
+  .form-input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .code-input-group {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .send-code-btn {
+    padding: 0.75rem 1rem;
+    width: 100%;
+  }
+
+  .login-btn {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+  }
+
+  .terms {
+    font-size: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .login-footer {
+    font-size: 0.75rem;
+    margin-top: 1rem;
+  }
+}
+
+/* 响应式 - 小屏手机 (360px 及以下) */
+@media (max-width: 360px) {
+  .form-section {
+    padding: 1.25rem 0.875rem;
+  }
+
+  .form-title {
+    font-size: 1.3rem;
+  }
+
+  .form-input {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .login-btn {
+    padding: 0.8rem;
+    font-size: 0.9rem;
   }
 }
