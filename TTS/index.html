@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +11,12 @@
             /* 品牌渐变：深蓝 -> 亮蓝 -> 科技青 */
             --brand-gradient: linear-gradient(135deg, #0f4c81 0%, #3b82f6 50%, #06b6d4 100%);
             /* 强调色：明亮的宝蓝色 */
-            --accent-color: #2563EB; 
+            --accent-color: #2563EB;
             /* 文本颜色 */
-            --text-dark: #0f172a; /* 深邃的藏青黑，比纯黑更协调 */
+            --text-dark: #0f172a;
+            /* 深邃的藏青黑，比纯黑更协调 */
             --text-gray: #64748b;
-            
+
             --glass-bg: rgba(255, 255, 255, 0.9);
         }
 
@@ -38,88 +40,192 @@
 
         /* --- 动画定义 --- */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(20px, 30px); }
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(20px, 30px);
+            }
         }
 
         @keyframes wave {
-            0%, 100% { transform: scaleY(0.5); }
-            50% { transform: scaleY(1.2); }
+
+            0%,
+            100% {
+                transform: scaleY(0.5);
+            }
+
+            50% {
+                transform: scaleY(1.2);
+            }
         }
-        
+
         @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
-        
+
         @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
-        
+
         @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
-        
+
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
         }
-        
+
         @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.9; }
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
         }
-        
+
         @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
+
         @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
         }
-        
+
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 10px rgba(37, 99, 235, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.6); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(37, 99, 235, 0.6);
+            }
         }
-        
+
         @keyframes typewriter {
-            from { width: 0; }
-            to { width: 100%; }
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
         }
-        
+
         @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
-        
+
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         @keyframes rotateSlow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
+
         /* 页面加载动画 */
         body {
             animation: fadeIn 0.6s ease-out;
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         /* 背景装饰光斑 (改为蓝色系) */
@@ -128,18 +234,27 @@
             border-radius: 50%;
             filter: blur(80px);
             z-index: -1;
-            opacity: 0.5; /*稍微降低不透明度，保持清爽*/
+            opacity: 0.5;
+            /*稍微降低不透明度，保持清爽*/
             animation: float 12s infinite ease-in-out;
         }
+
         .blob-1 {
-            width: 600px; height: 600px;
-            background: rgba(59, 130, 246, 0.15); /* 蓝色光晕 */
-            top: -100px; left: -100px;
+            width: 600px;
+            height: 600px;
+            background: rgba(59, 130, 246, 0.15);
+            /* 蓝色光晕 */
+            top: -100px;
+            left: -100px;
         }
+
         .blob-2 {
-            width: 500px; height: 500px;
-            background: rgba(6, 182, 212, 0.1); /* 青色光晕 */
-            bottom: -100px; right: -50px;
+            width: 500px;
+            height: 500px;
+            background: rgba(6, 182, 212, 0.1);
+            /* 青色光晕 */
+            bottom: -100px;
+            right: -50px;
             animation-delay: -5s;
         }
 
@@ -165,16 +280,20 @@
             letter-spacing: -0.5px;
             transition: transform 0.3s;
         }
+
         .nav-logo:hover {
             transform: scale(1.05);
         }
+
         .nav-logo svg {
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             animation: pulse 3s ease-in-out infinite;
         }
+
         .nav-logo:hover svg {
             animation: rotateSlow 3s linear infinite;
         }
+
         /* Logo 文字渐变改为蓝青色 */
         .logo-gradient-text {
             background: linear-gradient(90deg, #2563EB, #06b6d4);
@@ -194,24 +313,38 @@
             position: relative;
             animation: slideInRight 0.6s ease-out backwards;
         }
-        .nav-links a:nth-child(1) { animation-delay: 0.2s; }
-        .nav-links a:nth-child(2) { animation-delay: 0.3s; }
-        .nav-links a:nth-child(3) { animation-delay: 0.4s; }
-        .nav-links a:hover { 
+
+        .nav-links a:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .nav-links a:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .nav-links a:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .nav-links a:hover {
             color: var(--accent-color);
             transform: translateY(-2px);
         }
+
         .nav-links a::after {
-            content: ''; 
-            position: absolute; 
-            bottom: -4px; 
-            left: 0; 
-            width: 0; 
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
             height: 2px;
-            background: var(--accent-color); 
+            background: var(--accent-color);
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .nav-links a:hover::after { width: 100%; }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
 
         /* --- 主内容区 --- */
         .main-container {
@@ -241,41 +374,45 @@
             animation: fadeInScale 1s ease-out 0.2s backwards;
             transition: transform 0.3s, box-shadow 0.3s;
         }
+
         .hero-wrapper:hover {
             transform: translateY(-5px);
             box-shadow: 0 40px 80px -15px rgba(37, 99, 235, 0.35);
         }
 
         /* 装饰线条 */
-        .deco-line { 
-            position: absolute; 
-            background: rgba(255,255,255,0.15); 
+        .deco-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 10px;
             animation: slideInLeft 1s ease-out backwards;
         }
-        .line-1 { 
-            height: 2px; 
-            width: 60%; 
-            top: 20%; 
+
+        .line-1 {
+            height: 2px;
+            width: 60%;
+            top: 20%;
             left: 5%;
             animation-delay: 0.5s;
             animation: slideInLeft 1s ease-out 0.5s backwards, shimmer 3s linear infinite;
         }
-        .line-2 { 
-            height: 2px; 
-            width: 40%; 
-            top: 25%; 
+
+        .line-2 {
+            height: 2px;
+            width: 40%;
+            top: 25%;
             left: 5%;
             animation-delay: 0.7s;
             animation: slideInLeft 1s ease-out 0.7s backwards;
         }
+
         .circle-big {
             position: absolute;
-            width: 600px; 
+            width: 600px;
             height: 600px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            right: -100px; 
+            right: -100px;
             bottom: -200px;
             pointer-events: none;
             animation: rotateSlow 20s linear infinite;
@@ -284,23 +421,46 @@
         /* 声波动画 */
         .sound-wave {
             position: absolute;
-            left: 80px; bottom: 80px;
+            left: 80px;
+            bottom: 80px;
             display: flex;
             gap: 6px;
             align-items: flex-end;
             height: 40px;
         }
-        .bar { 
-            width: 6px; 
-            background: rgba(255,255,255,0.7); /* 略微增加不透明度 */
-            border-radius: 4px; 
+
+        .bar {
+            width: 6px;
+            background: rgba(255, 255, 255, 0.7);
+            /* 略微增加不透明度 */
+            border-radius: 4px;
             animation: wave 1.2s infinite ease-in-out;
         }
-        .bar:nth-child(1) { height: 40%; animation-delay: 0s; }
-        .bar:nth-child(2) { height: 80%; animation-delay: 0.1s; }
-        .bar:nth-child(3) { height: 100%; animation-delay: 0.2s; }
-        .bar:nth-child(4) { height: 60%; animation-delay: 0.3s; }
-        .bar:nth-child(5) { height: 30%; animation-delay: 0.4s; }
+
+        .bar:nth-child(1) {
+            height: 40%;
+            animation-delay: 0s;
+        }
+
+        .bar:nth-child(2) {
+            height: 80%;
+            animation-delay: 0.1s;
+        }
+
+        .bar:nth-child(3) {
+            height: 100%;
+            animation-delay: 0.2s;
+        }
+
+        .bar:nth-child(4) {
+            height: 60%;
+            animation-delay: 0.3s;
+        }
+
+        .bar:nth-child(5) {
+            height: 30%;
+            animation-delay: 0.4s;
+        }
 
         /* 左侧内容 */
         .hero-left {
@@ -315,19 +475,20 @@
         .tag-pill {
             display: inline-block;
             padding: 6px 16px;
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(4px);
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
             margin-bottom: 24px;
-            border: 1px solid rgba(255,255,255,0.25);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #e0f2fe;
             animation: bounce 2s ease-in-out infinite;
             transition: all 0.3s;
         }
+
         .tag-pill:hover {
-            background: rgba(255,255,255,0.25);
+            background: rgba(255, 255, 255, 0.25);
             transform: scale(1.05);
         }
 
@@ -337,10 +498,11 @@
             font-weight: 800;
             margin-bottom: 24px;
             letter-spacing: -1px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             animation: slideUp 1s ease-out 0.6s backwards;
             position: relative;
         }
+
         .hero-left h1::after {
             content: '';
             position: absolute;
@@ -348,7 +510,7 @@
             left: 0;
             width: 0;
             height: 4px;
-            background: rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.5);
             animation: typewriter 1.5s ease-out 1.2s forwards;
         }
 
@@ -362,35 +524,50 @@
             animation: slideUp 1s ease-out 0.8s backwards;
         }
 
-        .feature-icons { display: flex; gap: 24px; }
+        .feature-icons {
+            display: flex;
+            gap: 24px;
+        }
+
         .f-item {
-            display: flex; 
-            flex-direction: column; 
+            display: flex;
+            flex-direction: column;
             gap: 8px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             animation: scaleIn 0.6s ease-out backwards;
         }
-        .f-item:nth-child(1) { animation-delay: 1s; }
-        .f-item:nth-child(2) { animation-delay: 1.1s; }
-        .f-item:nth-child(3) { animation-delay: 1.2s; }
-        .f-item:hover { 
+
+        .f-item:nth-child(1) {
+            animation-delay: 1s;
+        }
+
+        .f-item:nth-child(2) {
+            animation-delay: 1.1s;
+        }
+
+        .f-item:nth-child(3) {
+            animation-delay: 1.2s;
+        }
+
+        .f-item:hover {
             transform: translateY(-8px) scale(1.05);
         }
-        
+
         .icon-box {
-            width: 48px; 
+            width: 48px;
             height: 48px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            display: flex; 
-            align-items: center; 
+            display: flex;
+            align-items: center;
             justify-content: center;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
+
         .icon-box::before {
             content: '';
             position: absolute;
@@ -398,20 +575,23 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transform: rotate(45deg);
             transition: all 0.5s;
             opacity: 0;
         }
-        .f-item:hover .icon-box { 
-            background: rgba(255,255,255,0.25);
+
+        .f-item:hover .icon-box {
+            background: rgba(255, 255, 255, 0.25);
             transform: rotate(5deg) scale(1.1);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
+
         .f-item:hover .icon-box::before {
             animation: shimmer 1s linear;
             opacity: 1;
         }
+
         .f-item:hover .icon-box svg {
             animation: bounce 0.6s ease-in-out;
         }
@@ -425,7 +605,7 @@
             justify-content: center;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(5px);
-            border-left: 1px solid rgba(255,255,255,0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
             animation: slideInRight 1s ease-out 0.6s backwards;
         }
 
@@ -434,13 +614,14 @@
             background: rgba(255, 255, 255, 0.95);
             border-radius: 28px;
             padding: 40px 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             transform: translateY(0);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             animation: scaleIn 0.8s ease-out 0.8s backwards;
             position: relative;
             overflow: hidden;
         }
+
         .login-card::before {
             content: '';
             position: absolute;
@@ -453,75 +634,88 @@
             transition: all 0.5s;
             opacity: 0;
         }
+
         .login-card:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 30px 60px rgba(0, 78, 146, 0.2);
         }
+
         .login-card:hover::before {
             animation: shimmer 1.5s linear;
             opacity: 1;
         }
 
-        .login-header { 
-            margin-bottom: 30px; 
+        .login-header {
+            margin-bottom: 30px;
             text-align: center;
             animation: fadeInUp 0.6s ease-out 1s backwards;
         }
-        .login-header h3 { 
-            font-size: 1.4rem; 
-            color: #0f172a; 
+
+        .login-header h3 {
+            font-size: 1.4rem;
+            color: #0f172a;
             margin-bottom: 8px;
             animation: slideUp 0.5s ease-out 1.2s backwards;
         }
-        .login-header p { 
-            font-size: 0.9rem; 
+
+        .login-header p {
+            font-size: 0.9rem;
             color: #64748b;
             animation: fadeInUp 0.5s ease-out 1.3s backwards;
         }
 
-        .input-group { 
-            margin-bottom: 20px; 
+        .input-group {
+            margin-bottom: 20px;
             position: relative;
             animation: fadeInUp 0.5s ease-out backwards;
         }
-        .input-group:nth-child(1) { animation-delay: 1.4s; }
-        .input-group:nth-child(2) { animation-delay: 1.5s; }
+
+        .input-group:nth-child(1) {
+            animation-delay: 1.4s;
+        }
+
+        .input-group:nth-child(2) {
+            animation-delay: 1.5s;
+        }
+
         .input-field {
-            width: 100%; 
-            height: 50px; 
+            width: 100%;
+            height: 50px;
             padding: 0 16px;
-            border: 2px solid #cbd5e1; 
+            border: 2px solid #cbd5e1;
             border-radius: 14px;
-            font-size: 0.95rem; 
-            outline: none; 
+            font-size: 0.95rem;
+            outline: none;
             background: #f8fafc;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: #334155;
         }
+
         .input-field:focus {
-            background: #fff; 
+            background: #fff;
             border-color: var(--accent-color);
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
             transform: translateY(-2px);
             animation: glow 2s ease-in-out infinite;
         }
 
-        .verify-row { 
-            display: flex; 
+        .verify-row {
+            display: flex;
             gap: 10px;
             align-items: stretch;
         }
+
         .btn-code {
-            height: 50px; 
+            height: 50px;
             padding: 0 20px;
             border: 2px solid var(--accent-color);
-            background: transparent; 
+            background: transparent;
             color: var(--accent-color);
-            border-radius: 14px; 
-            font-size: 0.9rem; 
+            border-radius: 14px;
+            font-size: 0.9rem;
             font-weight: 600;
-            cursor: pointer; 
-            white-space: nowrap; 
+            cursor: pointer;
+            white-space: nowrap;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -531,6 +725,7 @@
             box-sizing: border-box;
             line-height: 1;
         }
+
         .btn-code::before {
             content: '';
             position: absolute;
@@ -543,42 +738,47 @@
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
         }
-        .btn-code:hover:not(:disabled) { 
+
+        .btn-code:hover:not(:disabled) {
             background: #eff6ff;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
+
         .btn-code:hover:not(:disabled)::before {
             width: 300px;
             height: 300px;
         }
+
         .btn-code:active:not(:disabled) {
             transform: translateY(0);
         }
+
         .btn-code:disabled {
-            border-color: #e2e8f0; 
-            color: #94a3b8; 
-            cursor: not-allowed; 
+            border-color: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
             background: #f8fafc;
         }
 
         .btn-submit {
-            width: 100%; 
+            width: 100%;
             height: 52px;
-            background: linear-gradient(135deg, #0f172a, #1e293b); 
+            background: linear-gradient(135deg, #0f172a, #1e293b);
             color: white;
-            border: none; 
+            border: none;
             border-radius: 14px;
-            font-size: 1rem; 
+            font-size: 1rem;
             font-weight: 600;
-            cursor: pointer; 
+            cursor: pointer;
             margin-top: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            position: relative; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
             overflow: hidden;
             animation: fadeInUp 0.5s ease-out 1.6s backwards;
             box-shadow: 0 4px 14px rgba(15, 23, 42, 0.3);
         }
+
         .btn-submit::before {
             content: '';
             position: absolute;
@@ -591,80 +791,131 @@
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
         }
-        .btn-submit:hover { 
-            transform: translateY(-3px); 
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
             box-shadow: 0 12px 24px rgba(15, 23, 42, 0.3);
         }
+
         .btn-submit:hover::before {
             width: 400px;
             height: 400px;
         }
+
         .btn-submit:active {
             transform: translateY(-1px);
         }
-        
+
         /* Loading 状态样式 */
-        .btn-submit.loading { 
-            pointer-events: none; 
+        .btn-submit.loading {
+            pointer-events: none;
             opacity: 0.9;
             animation: pulse 1.5s ease-in-out infinite;
         }
-        .btn-submit.loading::after { 
-            content: "登录中..."; 
+
+        .btn-submit.loading::after {
+            content: "登录中...";
         }
-        .btn-submit.loading span { 
-            display: none; 
+
+        .btn-submit.loading span {
+            display: none;
         }
 
         .agreement {
-            margin-top: 20px; font-size: 0.75rem; color: #94a3b8;
-            text-align: center; line-height: 1.5;
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-align: center;
+            line-height: 1.5;
         }
-        .agreement a { color: #64748b; text-decoration: underline; transition: color 0.2s; }
-        .agreement a:hover { color: var(--accent-color); }
+
+        .agreement a {
+            color: #64748b;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        .agreement a:hover {
+            color: var(--accent-color);
+        }
 
         .footer-fixed {
-            position: absolute; 
-            bottom: 20px; 
+            position: absolute;
+            bottom: 20px;
             width: 100%;
-            text-align: center; 
-            font-size: 0.8rem; 
+            text-align: center;
+            font-size: 0.8rem;
             color: #94a3b8;
             animation: fadeInUp 1s ease-out 1.8s backwards;
             transition: opacity 0.3s;
         }
+
         .footer-fixed:hover {
             opacity: 0.7;
         }
-        
+
         /* 背景光斑动画增强 */
         .bg-blob {
             animation: float 15s infinite ease-in-out, pulse 8s ease-in-out infinite;
         }
+
         .blob-1 {
             animation-delay: 0s, 0s;
         }
+
         .blob-2 {
             animation-delay: -5s, -2s;
         }
-        
+
         /* 声波动画增强 */
         .sound-wave {
             animation: fadeInScale 1s ease-out 1s backwards;
         }
+
         .bar {
             animation: wave 1.2s infinite ease-in-out, bounce 2s ease-in-out infinite;
         }
 
         @media (max-width: 1024px) {
-            .hero-wrapper { flex-direction: column; height: auto; padding-bottom: 40px; }
-            .hero-left { padding: 40px; text-align: center; }
-            .feature-icons { justify-content: center; }
-            .hero-right { border-left: none; width: 100%; padding: 0 20px; }
-            .login-card { width: 100%; }
-            body { height: auto; overflow-y: auto; padding-bottom: 40px; }
-            .footer-fixed { position: relative; margin-top: 40px; }
-            .sound-wave { display: none; }
+            .hero-wrapper {
+                flex-direction: column;
+                height: auto;
+                padding-bottom: 40px;
+            }
+
+            .hero-left {
+                padding: 40px;
+                text-align: center;
+            }
+
+            .feature-icons {
+                justify-content: center;
+            }
+
+            .hero-right {
+                border-left: none;
+                width: 100%;
+                padding: 0 20px;
+            }
+
+            .login-card {
+                width: 100%;
+            }
+
+            body {
+                height: auto;
+                overflow-y: auto;
+                padding-bottom: 40px;
+            }
+
+            .footer-fixed {
+                position: relative;
+                margin-top: 40px;
+            }
+
+            .sound-wave {
+                display: none;
+            }
         }
 
         /* Dark Mode */
@@ -672,40 +923,60 @@
             background-color: #0f172a;
             color: #f1f5f9;
         }
-        body.dark-mode .nav-logo { color: #f1f5f9; }
-        body.dark-mode .nav-links a { color: #94a3b8; }
-        body.dark-mode .nav-links a:hover { color: var(--accent-color); }
+
+        body.dark-mode .nav-logo {
+            color: #f1f5f9;
+        }
+
+        body.dark-mode .nav-links a {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
         body.dark-mode .hero-wrapper {
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0e7490 100%);
             box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
         }
+
         body.dark-mode .login-card {
             background: rgba(30, 41, 59, 0.95);
             color: #f1f5f9;
         }
-        body.dark-mode .login-header h3 { color: #f1f5f9; }
+
+        body.dark-mode .login-header h3 {
+            color: #f1f5f9;
+        }
+
         body.dark-mode .input-field {
             background: #0f172a;
             border-color: #334155;
             color: #f1f5f9;
         }
+
         body.dark-mode .input-field:focus {
             background: #1e293b;
             border-color: var(--accent-color);
         }
+
         body.dark-mode .btn-code:disabled {
             background: #1e293b;
             border-color: #334155;
             color: #64748b;
         }
+
         body.dark-mode .theme-toggle {
             color: #94a3b8;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
         }
+
         body.dark-mode .theme-toggle:hover {
             color: var(--accent-color);
             background: rgba(255, 255, 255, 0.1);
         }
+
         /* Toggle Button */
         .theme-toggle {
             margin-left: 24px;
@@ -718,8 +989,9 @@
             height: 40px;
             border-radius: 50%;
             transition: all 0.3s;
-            background: rgba(0,0,0,0.05);
+            background: rgba(0, 0, 0, 0.05);
         }
+
         .theme-toggle:hover {
             color: var(--accent-color);
             background: rgba(37, 99, 235, 0.1);
@@ -727,6 +999,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="bg-blob blob-1"></div>
@@ -734,7 +1007,8 @@
 
     <nav class="navbar">
         <a href="#" class="nav-logo">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                 <polyline points="2 17 12 22 22 17"></polyline>
                 <polyline points="2 12 12 17 22 12"></polyline>
@@ -743,7 +1017,8 @@
         </a>
         <div class="nav-links">
             <div class="theme-toggle" onclick="toggleTheme()" title="切换深色模式">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="theme-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" id="theme-icon">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
             </div>
@@ -752,7 +1027,7 @@
 
     <div class="main-container">
         <div class="hero-wrapper">
-            
+
             <div class="deco-line line-1"></div>
             <div class="deco-line line-2"></div>
             <div class="circle-big"></div>
@@ -770,23 +1045,37 @@
                 <p>
                     一站式智能内容生产引擎。集成全生命周期音频管理、实时语音克隆，赋能开发者构建极致创意应用。
                 </p>
-                
+
                 <div class="feature-icons">
                     <div class="f-item">
                         <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path></svg>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            </svg>
                         </div>
                         <span>Audio</span>
                     </div>
                     <div class="f-item">
                         <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                                <line x1="7" y1="2" x2="7" y2="22"></line>
+                                <line x1="17" y1="2" x2="17" y2="22"></line>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                            </svg>
                         </div>
                         <span>Video</span>
                     </div>
                     <div class="f-item">
                         <div class="icon-box">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
                         </div>
                         <span>API</span>
                     </div>
@@ -799,12 +1088,12 @@
                         <h3>欢迎回来</h3>
                         <p>使用手机号码快捷登录工作台</p>
                     </div>
-                    
+
                     <form id="loginForm">
                         <div class="input-group">
                             <input type="tel" class="input-field" placeholder="请输入手机号码" maxlength="11" required>
                         </div>
-                        
+
                         <div class="input-group verify-row">
                             <input type="text" class="input-field" placeholder="短信验证码" maxlength="6" required>
                             <button type="button" class="btn-code" id="getCodeBtn">获取验证码</button>
@@ -847,18 +1136,18 @@
                     iconContainer.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
                 }
             }
-            
+
             // Expose to window for onclick
             window.toggleTheme = toggleTheme;
 
             // Init
-            (function() {
+            (function () {
                 const savedTheme = localStorage.getItem('theme');
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
                     document.body.classList.add('dark-mode');
                     const icon = document.getElementById('theme-icon');
-                    if(icon) updateThemeIcon(true);
+                    if (icon) updateThemeIcon(true);
                 }
             })();
 
@@ -873,11 +1162,11 @@
                 setTimeout(() => {
                     getCodeBtn.style.animation = '';
                 }, 200);
-                
+
                 let seconds = 60;
                 getCodeBtn.disabled = true;
                 getCodeBtn.textContent = `${seconds}s后重发`;
-                
+
                 const timer = setInterval(() => {
                     seconds--;
                     getCodeBtn.textContent = `${seconds}s后重发`;
@@ -896,18 +1185,18 @@
 
             // 2. 登录表单提交交互
             loginForm.addEventListener('submit', (e) => {
-                e.preventDefault(); 
-                
+                e.preventDefault();
+
                 // 添加提交动画
                 submitBtn.style.animation = 'scaleIn 0.2s ease-out';
-                
+
                 // 切换按钮状态为 Loading
                 submitBtn.classList.add('loading');
-                
+
                 // 添加表单淡出效果
                 loginForm.style.transition = 'opacity 0.5s';
                 loginForm.style.opacity = '0.7';
-                
+
                 // 模拟网络请求延迟，然后跳转
                 setTimeout(() => {
                     // 添加页面淡出效果
@@ -916,34 +1205,34 @@
                     setTimeout(() => {
                         window.location.href = 'tts.html';
                     }, 300);
-                }, 1000); 
+                }, 1000);
             });
-            
+
             // 输入框聚焦动画
             const inputFields = document.querySelectorAll('.input-field');
             inputFields.forEach(input => {
-                input.addEventListener('focus', function() {
+                input.addEventListener('focus', function () {
                     this.parentElement.style.animation = 'bounce 0.3s ease-out';
                     setTimeout(() => {
                         this.parentElement.style.animation = '';
                     }, 300);
                 });
             });
-            
+
             // Logo 点击动画
             const logo = document.querySelector('.nav-logo');
-            logo.addEventListener('click', function(e) {
+            logo.addEventListener('click', function (e) {
                 e.preventDefault();
                 this.style.animation = 'bounce 0.5s ease-out';
                 setTimeout(() => {
                     this.style.animation = '';
                 }, 500);
             });
-            
+
             // 功能图标点击动画
             const featureItems = document.querySelectorAll('.f-item');
             featureItems.forEach(item => {
-                item.addEventListener('click', function() {
+                item.addEventListener('click', function () {
                     this.style.animation = 'scaleIn 0.3s ease-out';
                     setTimeout(() => {
                         this.style.animation = '';
@@ -954,16 +1243,17 @@
             // 3. 简单的鼠标移动视差效果
             const heroWrapper = document.querySelector('.hero-wrapper');
             const heroLeft = document.querySelector('.hero-left');
-            
-            if(window.innerWidth > 1024) {
+
+            if (window.innerWidth > 1024) {
                 heroWrapper.addEventListener('mousemove', (e) => {
                     const x = (window.innerWidth - e.pageX * 2) / 100;
                     const y = (window.innerHeight - e.pageY * 2) / 100;
-                    
+
                     heroLeft.style.transform = `translateX(${x}px) translateY(${y}px)`;
                 });
             }
         });
     </script>
 </body>
+
 </html>

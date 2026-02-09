@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { getHistoryDownloadUrl } from '../../../api/history';
+import { getOrLoadAudio, audioCache } from '../../../utils/audioCache';
 
 type Item = any;
 
@@ -24,10 +25,24 @@ export default function HistoryList({ history }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const ensureAudioUrl = async (item: any, id: number | string): Promise<string | null> => {
-    const direct = item.audio_url;
-    if (direct && typeof direct === 'string') return direct;
-    const res = await getHistoryDownloadUrl(id);
-    return getAudioUrl(res);
+    // 优先使用缓存
+    const cacheId = `history-${id}`;
+    try {
+      const direct = item.audio_url;
+      if (direct && typeof direct === 'string') {
+        // 从缓存或网络获取音频
+        return await getOrLoadAudio(cacheId, direct);
+      }
+      const res = await getHistoryDownloadUrl(id);
+      const url = getAudioUrl(res);
+      if (url) {
+        return await getOrLoadAudio(cacheId, url);
+      }
+      return null;
+    } catch (e) {
+      console.error('获取音频失败', e);
+      return null;
+    }
   };
 
   const handlePlay = async (item: any, id: number | string) => {
@@ -76,7 +91,10 @@ export default function HistoryList({ history }: Props) {
         alert('未获取到下载链接');
         return;
       }
-      window.open(url, '_blank', 'noopener,noreferrer');
+      // 如果已缓存，直接使用缓存的 Blob URL
+      const cacheId = `history-${id}`;
+      const cachedUrl = await audioCache.get(cacheId);
+      window.open(cachedUrl || url, '_blank', 'noopener,noreferrer');
     } catch (e: any) {
       console.error('获取下载链接失败', e);
       alert(e?.message || '获取下载链接失败，请稍后重试');

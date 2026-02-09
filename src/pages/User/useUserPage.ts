@@ -5,6 +5,7 @@ import { getVoices, Voice, uploadCustomVoice } from "../../api/voice";
 import { generateSpeech, uploadEmotionReference } from "../../api/synthesis";
 import { getSynthesisHistory } from "../../api/history";
 import { logout, setLogoutFlag } from "../../api/auth";
+import { audioCache } from "../../utils/audioCache";
 
 // --- 开发辅助：方便在本地覆盖/清理 token（仅用于本地调试） ---
 export function __dev_setToken(
@@ -372,8 +373,9 @@ export function useUserPage() {
       const audioUrl = typeof result === 'string' ? result : result?.audio_url;
       const creditsUsed = result && typeof result === 'object' ? (result as any).credits_used : undefined;
       if (audioUrl) {
+        const newAudioId = `audio-${Date.now()}`;
         const newAudio: GeneratedAudio = {
-          id: `audio-${Date.now()}`,
+          id: newAudioId,
           audioUrl,
           text: text,
           voiceName: mode === "library" ? selectedVoice?.name : undefined,
@@ -381,6 +383,9 @@ export function useUserPage() {
           createdAt: Date.now(),
         };
         setGeneratedAudios(prev => [newAudio, ...prev]);
+
+        // 自动缓存新生成的音频
+        audioCache.set(newAudioId, audioUrl).catch(console.error);
       }
 
       // 返回结果，供页面展示播放器（接口只返回音频 url，需能直接播放）

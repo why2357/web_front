@@ -215,21 +215,24 @@ function Login() {
       <div className="login-card">
         {/* 左侧品牌区 */}
         <div className="brand-section">
+          <div className="circle-deco"></div>
           <div className="brand-logo">
             <span className="logo-icon">🎙️</span>
             <span className="logo-text">Crea Vedio</span>
           </div>
-          
+
+          <div className="tag-pill">✨ 全新 PaaS 平台上线</div>
+
           <h1 className="brand-title">
             Next-Gen<br />
             Audio & Animation
           </h1>
-          
+
           <p className="brand-description">
-            一站式视频配音生产引擎，新流全互动媒体创意智能，
-            助力游戏开发者创建独特的双向互动体验。
+            一站式智能内容生产引擎。集成全生命周期音频管理、实时语音克隆，
+            赋能开发者构建极致创意应用。
           </p>
-          
+
           <div className="feature-icons">
             <div className="feature-item">
               <span className="feature-icon">🎵</span>
@@ -244,7 +247,7 @@ function Login() {
               <span>API</span>
             </div>
           </div>
-          
+
           <div className="audio-wave">
             <div className="wave-bar"></div>
             <div className="wave-bar"></div>
@@ -295,11 +298,11 @@ function Login() {
             </div>
             
             <button
-              className="login-btn"
+              className={`login-btn${loading ? ' loading' : ''}`}
               onClick={handleLogin}
               disabled={loading}
             >
-              {loading ? '登录中...' : '登录 / 注册'}
+              <span>{loading ? '' : '登录 / 注册'}</span>
             </button>
             
             <p className="terms">
@@ -313,7 +316,7 @@ function Login() {
       </div>
       
       <footer className="login-footer">
-        © 蜂云世界
+        © 2026 Crea Vedio Inc. Powered by Intelligent Engine.
       </footer>
     </div>
   );
