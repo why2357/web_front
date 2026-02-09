@@ -212,111 +212,139 @@ function Login() {
 
   return (
     <div className="login-container">
-      <div className="login-card">
-        {/* 左侧品牌区 */}
-        <div className="brand-section">
-          <div className="circle-deco"></div>
-          <div className="brand-logo">
-            <span className="logo-icon">🎙️</span>
-            <span className="logo-text">Crea Vedio</span>
+      {/* 背景装饰光斑 */}
+      <div className="bg-blob blob-1"></div>
+      <div className="bg-blob blob-2"></div>
+
+      {/* 导航栏 */}
+      <nav className="navbar">
+        <a href="#" className="nav-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="3"
+            strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          <span className="logo-gradient-text">Crea Vedio</span>
+        </a>
+      </nav>
+
+      {/* 主内容区 */}
+      <div className="main-container">
+        <div className="hero-wrapper">
+          {/* 装饰线条 */}
+          <div className="deco-line line-1"></div>
+          <div className="deco-line line-2"></div>
+          <div className="circle-big"></div>
+          <div className="sound-wave">
+            <div className="bar"></div>
+            <div className="bar"></div>
+            <div className="bar"></div>
+            <div className="bar"></div>
+            <div className="bar"></div>
           </div>
 
-          <div className="tag-pill">✨ 全新 PaaS 平台上线</div>
-
-          <h1 className="brand-title">
-            Next-Gen<br />
-            Audio & Animation
-          </h1>
-
-          <p className="brand-description">
-            一站式智能内容生产引擎。集成全生命周期音频管理、实时语音克隆，
-            赋能开发者构建极致创意应用。
-          </p>
-
-          <div className="feature-icons">
-            <div className="feature-item">
-              <span className="feature-icon">🎵</span>
-              <span>Audio</span>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon">🎬</span>
-              <span>Video</span>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon">⚙️</span>
-              <span>API</span>
-            </div>
-          </div>
-
-          <div className="audio-wave">
-            <div className="wave-bar"></div>
-            <div className="wave-bar"></div>
-            <div className="wave-bar"></div>
-            <div className="wave-bar"></div>
-            <div className="wave-bar"></div>
-          </div>
-        </div>
-
-        {/* 右侧登录表单 */}
-        <div className="form-section">
-          <h2 className="form-title">欢迎回来</h2>
-          <p className="form-subtitle">使用手机号码快捷登录工作台</p>
-          
-          <div className="form-body">
-            <input
-              type="tel"
-              className="form-input"
-              placeholder="请输入手机号码"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              maxLength={11}
-            />
-            
-            <div className="code-input-group">
-              <input
-                type="text"
-                className="form-input code-input"
-                placeholder="短信验证码"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                maxLength={6}
-              />
-              <button
-                className="send-code-btn"
-                onClick={handleSendCode}
-                disabled={sending || countdown > 0}
-              >
-                {countdown > 0 ? `${countdown}s` : sending ? '发送中...' : '获取验证码'}
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.9rem', color: 'var(--text-sub)' }}>
-                <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />
-                记住我（下次自动填充并尝试自动登录）
-              </label>
-            </div>
-            
-            <button
-              className={`login-btn${loading ? ' loading' : ''}`}
-              onClick={handleLogin}
-              disabled={loading}
-            >
-              <span>{loading ? '' : '登录 / 注册'}</span>
-            </button>
-            
-            <p className="terms">
-              登录即同意我们的
-              <a href="#"> 服务协议 </a>
-              和
-              <a href="#"> 隐私政策</a>
+          {/* 左侧品牌区 */}
+          <div className="hero-left">
+            <div className="tag-pill">✨ 全新 PaaS 平台上线</div>
+            <h1>Next-Gen<br />Audio & Animation</h1>
+            <p>
+              一站式智能内容生产引擎。集成全生命周期音频管理、实时语音克隆，赋能开发者构建极致创意应用。
             </p>
+
+            <div className="feature-icons">
+              <div className="f-item">
+                <div className="icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  </svg>
+                </div>
+                <span>Audio</span>
+              </div>
+              <div className="f-item">
+                <div className="icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                    <line x1="7" y1="2" x2="7" y2="22"></line>
+                    <line x1="17" y1="2" x2="17" y2="22"></line>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                  </svg>
+                </div>
+                <span>Video</span>
+              </div>
+              <div className="f-item">
+                <div className="icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                  </svg>
+                </div>
+                <span>API</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 右侧登录表单 */}
+          <div className="hero-right">
+            <div className="login-card">
+              <div className="login-header">
+                <h3>欢迎回来</h3>
+                <p>使用手机号码快捷登录工作台</p>
+              </div>
+
+              <input
+                type="tel"
+                className="input-field"
+                placeholder="请输入手机号码"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                maxLength={11}
+              />
+
+              <div className="input-group verify-row">
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="短信验证码"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  maxLength={6}
+                />
+                <button
+                  className="btn-code"
+                  onClick={handleSendCode}
+                  disabled={sending || countdown > 0}
+                >
+                  {countdown > 0 ? `${countdown}s后重发` : sending ? '发送中...' : '获取验证码'}
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.85rem', color: 'var(--text-gray)', marginBottom: 8 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                  <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />
+                  记住我（下次自动填充并尝试自动登录）
+                </label>
+              </div>
+
+              <button
+                className={`btn-submit${loading ? ' loading' : ''}`}
+                onClick={handleLogin}
+                disabled={loading}
+              >
+                <span>{loading ? '' : '登录 / 注册'}</span>
+              </button>
+
+              <div className="agreement">
+                登录即代表您同意 <a href="#">服务条款</a> 与 <a href="#">隐私政策</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      
-      <footer className="login-footer">
-        © 2026 Crea Vedio Inc. Powered by Intelligent Engine.
+
+      <footer className="footer-fixed">
+        <div>© 2026 Crea Vedio Inc. Powered by Intelligent Engine.</div>
       </footer>
     </div>
   );
