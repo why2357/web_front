@@ -115,7 +115,9 @@ export function useUserPage() {
   const [voiceFilter, setVoiceFilter] = useState<{
     gender: string;
     age_range: string;
-  }>({ gender: "", age_range: "" });
+    categories: string[];
+  }>({ gender: "", age_range: "", categories: [] });
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [loadingVoices, setLoadingVoices] = useState(false);
   const [hasMoreVoices, setHasMoreVoices] = useState(false);
   const voiceListRef = useRef<HTMLDivElement>(null);
@@ -211,7 +213,7 @@ export function useUserPage() {
 
   // --- 音色筛选功能 ---
   const applyVoiceFilter = (
-    filter: Partial<{ gender: string; age_range: string }>,
+    filter: Partial<{ gender: string; age_range: string; categories: string[] }>,
   ) => {
     const newFilter = { ...voiceFilter, ...filter };
     setVoiceFilter(newFilter);
@@ -219,15 +221,28 @@ export function useUserPage() {
     loadVoicesWithFilter(newFilter);
   };
 
+  const resetVoiceFilter = () => {
+    const resetFilter = { gender: "", age_range: "", categories: [] };
+    setVoiceFilter(resetFilter);
+    loadVoicesWithFilter(resetFilter);
+  };
+
+  const openFilterModal = () => setFilterModalOpen(true);
+  const closeFilterModal = () => setFilterModalOpen(false);
+
   const loadVoicesWithFilter = async (filter: {
     gender: string;
     age_range: string;
+    categories?: string[];
   }) => {
     try {
       setLoadingVoices(true);
       const params: any = {};
       if (filter.gender) params.gender = filter.gender;
       if (filter.age_range) params.age_range = filter.age_range;
+      if (filter.categories && filter.categories.length > 0) {
+        params.categories = filter.categories.join(',');
+      }
       const data = await getVoices(params);
       setVoices(data);
       setHasMoreVoices(data.length >= 20);
@@ -334,9 +349,9 @@ export function useUserPage() {
 
       let emoMethod = 0;
       if (emotionTab === "default") emoMethod = 0;
-      else if (emotionTab === "情感参考") emoMethod = 1;
-      else if (emotionTab === "情感向量") emoMethod = 2;
-      else if (emotionTab === "情感文本") emoMethod = 3;
+      else if (emotionTab === "reference") emoMethod = 1;
+      else if (emotionTab === "manual") emoMethod = 2;
+      else if (emotionTab === "text") emoMethod = 3;
 
       const result = await generateSpeech({
         text_content: text,
@@ -345,11 +360,11 @@ export function useUserPage() {
           mode === "clone" && customVoiceId ? customVoiceId : undefined,
         emo_control_method: emoMethod,
         emo_audio:
-          emotionTab === "情感参考" && emoAudioId ? emoAudioId : undefined,
-        emo_text: emotionTab === "情感文本" && emoText ? emoText : undefined,
+          emotionTab === "reference" && emoAudioId ? emoAudioId : undefined,
+        emo_text: emotionTab === "text" && emoText ? emoText : undefined,
         // 后端现在期望收到数组形式的情感向量（emo_vec），按顺序：joy, anger, sadness, calm
         emo_vec:
-          emotionTab === "情感向量"
+          emotionTab === "manual"
             ? [
                 emoVector.joy,
                 emoVector.disgust,
@@ -501,6 +516,11 @@ export function useUserPage() {
     filterOpen,
     setFilterOpen,
     voiceFilter,
+    setVoiceFilter,
+    filterModalOpen,
+    openFilterModal,
+    closeFilterModal,
+    resetVoiceFilter,
     // form
     text,
     setText,

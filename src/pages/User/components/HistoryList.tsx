@@ -112,51 +112,32 @@ export default function HistoryList({ history }: Props) {
         const isLoading = loadingId === id;
         const isPlaying = playingId === id;
         return (
-          <div key={id} className="timeline-item">
-            <div className="timeline-dot" />
-            <div className="timeline-item-meta">
-              {item.created_at ? new Date(item.created_at).toLocaleString() : '未知时间'}
-            </div>
-            <div className="timeline-item-text">{text || '—'}</div>
-            {creditsCost != null && (
-              <div className="timeline-item-credits">
-                <span className="credits-cost">-{creditsCost}</span>
+          <div key={id} className="feed-item">
+            <div className="feed-dot"></div>
+            <div className="feed-line"></div>
+            <div className="feed-card" onClick={() => {
+              // Copy text to input functionality could be added here
+              const textInput = document.querySelector('.main-textarea') as HTMLTextAreaElement;
+              if (textInput && text) {
+                textInput.value = text;
+                textInput.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+            }}>
+              <div className="feed-meta">
+                <span>Voice_{String(id).slice(-6)}.wav</span>
+                <span>{item.created_at ? new Date(item.created_at).toLocaleString() : '未知时间'}</span>
               </div>
-            )}
-            <div className="timeline-item-actions">
-              <button
-                type="button"
-                className={`history-icon-btn history-icon-btn--play${isPlaying ? ' is-playing' : ''}`}
-                disabled={isLoading}
-                onClick={() => handlePlay(item, id)}
-                title={isPlaying ? '停止' : '播放'}
-                aria-label={isPlaying ? '停止' : '播放'}
-              >
-                {isPlaying ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                    <rect x="6" y="4" width="4" height="16" rx="1" />
-                    <rect x="14" y="4" width="4" height="16" rx="1" />
+              <div className="feed-text">{text || '—'}</div>
+              <div className="feed-actions">
+                {creditsCost != null && <span className="cost-badge">-{creditsCost} pts</span>}
+                <div className="action-icon" onClick={(e) => { e.stopPropagation(); handleDownload(id); }}>
+                  <svg className="icon icon-sm" viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
-                ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                )}
-              </button>
-              <button
-                type="button"
-                className="history-icon-btn history-icon-btn--download"
-                disabled={isLoading}
-                onClick={() => handleDownload(id)}
-                title="下载"
-                aria-label="下载"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-              </button>
+                </div>
+              </div>
             </div>
           </div>
         );

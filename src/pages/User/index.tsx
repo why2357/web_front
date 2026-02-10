@@ -9,6 +9,7 @@ import TextComposer from './components/TextComposer';
 import GenerateButton from './components/GenerateButton';
 import HistoryList from './components/HistoryList';
 import GeneratedAudioList from './components/GeneratedAudioList';
+import FilterModal from './components/FilterModal';
 
 // UI primitives (shared)
 import { Button, Modal } from '../../components/ui';
@@ -17,13 +18,28 @@ function User() {
   const ui = useUserPage();
   const [cloneDragOver, setCloneDragOver] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    if (!ui.filterOpen) return;
-    const close = () => ui.setFilterOpen(false);
-    document.addEventListener('click', close);
-    return () => document.removeEventListener('click', close);
-  }, [ui.filterOpen, ui.setFilterOpen]);
+    // 初始化深色模式
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      setDarkMode(true);
+      document.documentElement.classList.add('dark-mode');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+    if (!darkMode) {
+      document.documentElement.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   return (
     <div className="user-page">
@@ -53,6 +69,40 @@ function User() {
           <span>Crea Vedio</span>
           <span className="logo-badge">Pro 2.0</span>
         </div>
+
+        <div style={{ flex: 1 }}></div>
+
+        {/* 资源库管理链接 */}
+        <a
+          href="#"
+          onClick={(e) => { e.preventDefault(); /* TODO: 导航到资源库 */ }}
+          style={{ marginRight: 16, fontSize: '0.9rem', fontWeight: 600, color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', background: 'var(--primary-light)', borderRadius: 8, transition: 'all 0.2s' }}
+        >
+          <svg className="icon icon-sm" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+          资源库管理
+        </a>
+
+        {/* 主题切换 */}
+        <div className="theme-toggle" onClick={toggleTheme} title="切换深色模式" style={{ padding: 8, borderRadius: 8, cursor: 'pointer', color: 'var(--text-sub)', transition: 'all 0.2s', marginRight: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg className="icon" viewBox="0 0 24 24">
+            {darkMode ? (
+              <>
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </>
+            ) : (
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            )}
+          </svg>
+        </div>
+
         <div className="user-profile" aria-label="用户信息" style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           <div className="user-credits">
             <div
@@ -109,56 +159,14 @@ function User() {
             <div className="filter-wrap">
               <button
                 type="button"
-                className={`filter-btn ${ui.filterOpen ? 'active' : ''}`}
-                onClick={(e) => { e.stopPropagation(); ui.setFilterOpen(!ui.filterOpen); }}
+                className={`filter-btn ${ui.filterModalOpen ? 'active' : ''}`}
+                onClick={ui.openFilterModal}
               >
-                <svg className="icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M6 12h12m-9 6h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                <svg className="icon-sm" viewBox="0 0 24 24">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 筛选
               </button>
-              {ui.filterOpen && (
-                <div className="filter-dropdown" onClick={(e) => e.stopPropagation()}>
-                  <div className="filter-dropdown-section">
-                    <span className="filter-dropdown-label">性别</span>
-                    <div className="filter-dropdown-options">
-                      {[
-                        { value: '', label: '全部' },
-                        { value: 'male', label: '男' },
-                        { value: 'female', label: '女' },
-                      ].map((o) => (
-                        <button
-                          key={o.value || 'all'}
-                          type="button"
-                          className={`filter-opt ${ui.voiceFilter.gender === o.value ? 'active' : ''}`}
-                          onClick={() => ui.applyVoiceFilter({ gender: o.value })}
-                        >
-                          {o.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="filter-dropdown-section">
-                    <span className="filter-dropdown-label">年龄段</span>
-                    <div className="filter-dropdown-options">
-                      {[
-                        { value: '', label: '全部' },
-                        { value: 'child', label: '儿童' },
-                        { value: 'youth', label: '青年' },
-                        { value: 'middle', label: '中年' },
-                        { value: 'old', label: '老年' },
-                      ].map((o) => (
-                        <button
-                          key={o.value || 'all'}
-                          type="button"
-                          className={`filter-opt ${ui.voiceFilter.age_range === o.value ? 'active' : ''}`}
-                          onClick={() => ui.applyVoiceFilter({ age_range: o.value })}
-                        >
-                          {o.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
@@ -188,13 +196,17 @@ function User() {
           </div>
         </aside>
 
-        {/* 中间：固定高度滚动容器，内容超出即出滚动条 */}
-        <div className="stage-scroll">
-          <main className="stage-container">
+        {/* 中间区域 */}
+        <section className="panel panel-bg">
+          <div className="stage-container">
           <div className="control-card">
-            <div className="top-tabs">
-              <div className={`top-tab ${ui.mode === 'library' ? 'active' : ''}`} onClick={() => ui.setMode('library')}>使用库音色</div>
-              <div className={`top-tab ${ui.mode === 'clone' ? 'active' : ''}`} onClick={() => ui.setMode('clone')}>克隆</div>
+            <div className="card-tabs">
+              <div className={`tab-btn ${ui.mode === 'library' ? 'active' : ''}`} onClick={() => ui.setMode('library')}>
+                <span>使用库音色</span>
+              </div>
+              <div className={`tab-btn ${ui.mode === 'clone' ? 'active' : ''}`} onClick={() => ui.setMode('clone')}>
+                <span>克隆</span>
+              </div>
             </div>
 
             <div className="card-body">
@@ -229,8 +241,24 @@ function User() {
                   )}
                 </div>
               ) : (
-                <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-sub)' }}>
-                  {ui.selectedVoice ? (<div>已选择音色：<span style={{ color: 'var(--text-main)', fontWeight: 600 }}>{ui.selectedVoice.name}</span></div>) : '请在左侧选择一个音色'}
+                <div className="preset-display fade-in">
+                  <div className={`voice-icon ${ui.selectedVoice?.gender === 'male' ? 'v-blue' : ui.selectedVoice?.gender === 'female' ? 'v-pink' : 'v-orange'}`} style={{ width: '48px', height: '48px', borderRadius: '12px' }}>
+                    <svg className="icon icon-lg" viewBox="0 0 24 24">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontWeight: 600, fontSize: '1rem' }}>
+                        {ui.selectedVoice?.name || '请选择音色'}
+                      </span>
+                      {ui.selectedVoice && <span className="preset-badge">当前选择</span>}
+                    </div>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-sub)', marginTop: '4px' }}>
+                      {ui.selectedVoice ? '已应用该音色配置，点击左侧列表可快速切换。' : '请在左侧选择一个音色'}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -277,35 +305,41 @@ function User() {
             onPlay={ui.handlePlayGeneratedAudio}
             onRemove={ui.handleRemoveGeneratedAudio}
           />
-
-          <div className="composer-actions">
-            <GenerateButton
-              loading={ui.loading}
-              uploadingClone={ui.uploadingClone}
-              uploadingEmo={ui.uploadingEmo}
-              onClick={async () => {
-                try {
-                  await ui.handleSubmit();
-                } catch (err: any) {
-                  const res = err?.response?.data;
-                  const msg =
-                    err?.message ||
-                    (res && (res.message ?? res.detail ?? res.msg ?? (typeof res.error === 'string' ? res.error : null))) ||
-                    (typeof err === 'string' ? err : '合成失败');
-                  alert(msg);
-                }
-              }}
-            />
           </div>
-          </main>
-        </div>
+
+          {/* 固定底部操作栏 */}
+          <div className="fixed-action-bar">
+            <div className="action-bar-inner">
+              <div className="action-bar">
+                <GenerateButton
+                  loading={ui.loading}
+                  uploadingClone={ui.uploadingClone}
+                  uploadingEmo={ui.uploadingEmo}
+                  onClick={async () => {
+                    try {
+                      await ui.handleSubmit();
+                    } catch (err: any) {
+                      const res = err?.response?.data;
+                      const msg =
+                        err?.message ||
+                        (res && (res.message ?? res.detail ?? res.msg ?? (typeof res.error === 'string' ? res.error : null))) ||
+                        (typeof err === 'string' ? err : '合成失败');
+                      alert(msg);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* 右侧：生成历史 */}
         <aside className="panel">
           <div className="panel-header">
-            <h3>生成历史</h3>
+            <span>生成历史</span>
+            <span style={{ fontSize: '0.8rem', background: '#f1f5f9', padding: '2px 8px', borderRadius: '10px' }}>{ui.history.length}</span>
           </div>
-          <div className="voice-list-container timeline-container" style={{ padding: '20px' }}>
+          <div className="history-feed" style={{ padding: '16px' }}>
             <HistoryList history={ui.history} />
           </div>
         </aside>
@@ -345,6 +379,16 @@ function User() {
           <Button variant="danger" onClick={ui.confirmLogout}>退出</Button>
         </div>
       </Modal>
+
+      {/* --- Filter Modal --- */}
+      <FilterModal
+        open={ui.filterModalOpen}
+        onClose={ui.closeFilterModal}
+        filter={ui.voiceFilter}
+        onFilterChange={ui.setVoiceFilter}
+        onApply={ui.closeFilterModal}
+        onReset={ui.resetVoiceFilter}
+      />
     </div>
   );
 }

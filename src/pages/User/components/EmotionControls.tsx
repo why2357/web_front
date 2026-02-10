@@ -67,16 +67,19 @@ export default function EmotionControls(props: Props) {
 
   return (
     <div>
-      <div className="emotion-tabs">
-        {['默认', '情感向量', '情感参考', '情感文本'].map((tab) => (
-          <div
-            key={tab}
-            className={`emotion-tab ${emotionTab === (tab === '默认' ? 'default' : tab) ? 'active' : ''}`}
-            onClick={() => setEmotionTab(tab === '默认' ? 'default' : tab)}
-          >
-            {tab}
-          </div>
-        ))}
+      <div className="card-tabs">
+        <div className={`tab-btn ${emotionTab === 'default' ? 'active' : ''}`} onClick={() => setEmotionTab('default')}>
+          <span>默认</span>
+        </div>
+        <div className={`tab-btn ${emotionTab === 'manual' ? 'active' : ''}`} onClick={() => setEmotionTab('manual')}>
+          <span>情感控制</span>
+        </div>
+        <div className={`tab-btn ${emotionTab === 'reference' ? 'active' : ''}`} onClick={() => setEmotionTab('reference')}>
+          <span>情感参考</span>
+        </div>
+        <div className={`tab-btn ${emotionTab === 'text' ? 'active' : ''}`} onClick={() => setEmotionTab('text')}>
+          <span>情感文本</span>
+        </div>
       </div>
 
       <div className="emotion-panel-shell" data-panel-container>
@@ -90,7 +93,7 @@ export default function EmotionControls(props: Props) {
         </div>
       )} 
 
-      {emotionTab === '情感参考' && (
+      {emotionTab === 'reference' && (
         <div className="emo-ref-wrap emotion-panel">
           {/* 与克隆一致的上传框：虚线框 + 图标 + 文案 */}
           <div
@@ -175,7 +178,7 @@ export default function EmotionControls(props: Props) {
         </div>
       )}
 
-      {emotionTab === '情感文本' && (
+      {emotionTab === 'text' && (
         <div className="emo-text-wrap emotion-panel">
           <textarea
             className="main-textarea main-textarea--emotion"
@@ -189,7 +192,7 @@ export default function EmotionControls(props: Props) {
         </div>
       )} 
 
-      {emotionTab === '情感向量' && (
+      {emotionTab === 'manual' && (
         <div className="emo-vector-wrap emotion-panel">
           <div className="emo-vector-intro">调整下方各情感滑块以组合所需的情感向量（取值 0.0–1.0）。</div>
 
