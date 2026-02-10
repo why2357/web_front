@@ -16,7 +16,6 @@ type Props = {
   audios: GeneratedAudio[];
   playingId: string | null;
   onPlay: (audio: GeneratedAudio) => void;
-  onRemove: (id: string) => void;
   audioProgress?: Record<string, ProgressInfo>;
   currentAudioPlayer?: HTMLAudioElement | null;
   onSeek?: (percentage: number) => void;
@@ -33,7 +32,6 @@ export default function GeneratedAudioList({
   audios,
   playingId,
   onPlay,
-  onRemove,
   audioProgress = {},
   currentAudioPlayer = null,
   onSeek

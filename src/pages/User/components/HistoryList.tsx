@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { getHistoryDownloadUrl } from '../../../api/history';
-import { getOrLoadAudio, audioCache } from '../../../utils/audioCache';
+import { getOrLoadAudio } from '../../../utils/audioCache';
 
 type Item = any;
 

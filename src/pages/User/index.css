@@ -571,22 +571,24 @@
 }
 .emo-reset-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-/* 情感向量：网格 + 滑块，易读易操作 */
+/* 情感向量：网格 + 竖直滑块，8列布局 */
 .emo-vector-wrap { display: flex; flex-direction: column; gap: 14px; }
 .emo-vector-intro { color: var(--text-sub); font-size: 0.85rem; line-height: 1.4; }
-.emotion-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-@media (max-width: 500px) { .emotion-grid { grid-template-columns: 1fr; } }
+.emotion-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
+@media (max-width: 900px) { .emotion-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 600px) { .emotion-grid { grid-template-columns: repeat(2, 1fr); } }
 .emotion-item {
     background: #fff;
     border-radius: 10px;
-    padding: 12px 14px;
+    padding: 10px 8px;
     border: 1px solid var(--border);
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
     gap: 8px;
+    align-items: center;
 }
-.emotion-item__head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.emotion-item__head { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 0; }
 .emotion-item__head .emotion-emoji {
     width: 28px; height: 28px;
     border-radius: 8px;
@@ -596,50 +598,100 @@
     flex-shrink: 0;
 }
 .emotion-item__head .emotion-title {
-    font-weight: 600; color: var(--text-main); font-size: 0.85rem;
+    font-weight: 600; color: var(--text-main); font-size: 0.75rem;
 }
 .emotion-item__row {
     display: flex;
+    top: 30px;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 30px;
+    /* 为滑块预留固定高度 */
+    height: 180px;
+    justify-content: flex-start;
+    position: relative;
 }
-.emotion-item__row .slider-container--emo { flex: 1; min-width: 0; }
-.emotion-item__row .emotion-value { min-width: 38px; text-align: center; font-size: 0.8rem; font-weight: 700; }
-.emotion-item__row .emo-reset-btn { flex-shrink: 0; padding: 6px 10px; font-size: 0.8rem; }
-.emotion-item__row .emo-reset-btn svg { width: 14px; height: 14px; }
+.emotion-item__row .slider-container--emo { flex: 0 0 auto; min-width: unset; }
+.emotion-item__row .emotion-value { min-width: 32px; text-align: center; font-size: 0.75rem; font-weight: 700; order: 2; }
+.emotion-item__row .emo-reset-btn { flex-shrink: 0; padding: 4px 6px; font-size: 0.7rem; order: 3; }
+.emotion-item__row .emo-reset-btn svg { width: 18px; height: 12px; }
 
-.slider-container--emo { position: relative; height: 10px; border-radius: 5px; background: #e2e8f0; overflow: visible; }
+/* 竖直滑块容器 - 通过旋转实现 */
+.slider-container--emo {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    /* 水平滑块的尺寸 */
+    width: 120px;
+    height: 10px;
+    border-radius: 5px;
+    background: #e2e8f0;
+    overflow: visible;
+    /* 先水平居中，再旋转-90度使滑块竖直 */
+    transform: translateX(-50%) rotate(-90deg);
+    /* 从中心旋转 */
+    transform-origin: center center;
+    order: 1;
+}
 .slider-container--emo .slider-progress {
     position: absolute; left: 0; top: 0; bottom: 0; height: 100%;
     background: var(--primary);
     border-radius: 5px; z-index: 1; pointer-events: none;
 }
+/* 竖直滑块 - 通过旋转实现 */
 .slider--emo {
-    -webkit-appearance: none; width: 100%; height: 10px; background: transparent;
-    position: relative; z-index: 3; outline: none; pointer-events: auto;
+    -webkit-appearance: none;
+    width: 120px;
+    height: 100px;
+    background: transparent;
+    position: relative;
+    z-index: 3;
+    outline: none;
+    pointer-events: auto;
+    cursor: pointer;
+    
 }
+/* Webkit滑块样式 */
 .slider--emo::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-    background: #fff; border: 2px solid var(--primary);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-top: -4px;
-}
-.slider--emo::-moz-range-thumb {
-    width: 18px; height: 18px; border-radius: 50%;
-    background: #fff; border: 2px solid var(--primary);
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--primary);
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    /* 旋转-90度后: margin-top控制水平位置(负数向左, 正数向右) */
+    margin-top: 0px;
+    /* 旋转-90度后: margin-left控制竖直位置(负数向上, 正数向下) */
+    margin-left: 0px;
+    cursor: pointer;
+        transform: translateY(3px); 负数向左，正数向右
+
+}
+/* Firefox滑块样式 */
+.slider--emo::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--primary);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
 }
 .emotion-value {
-    min-width: 40px; text-align: center;
-    background: #f8fafc; border: 1px solid var(--border); border-radius: 8px;
-    padding: 4px 8px; font-size: 0.8rem; font-weight: 700; color: var(--text-main);
+    min-width: 32px; text-align: center;
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 6px;
+    padding: 2px 6px; font-size: 0.75rem; font-weight: 700; color: var(--text-main);
 }
 .emo-reset-btn {
-    background: #fff; border-radius: 8px; padding: 6px;
+    background: #fff; border-radius: 6px; padding: 4px 6px;
     color: var(--text-sub); border: 1px solid var(--border);
     transition: color 0.2s, border-color 0.2s;
+    font-size: 0.7rem;
 }
 .emo-reset-btn:hover { color: var(--primary); border-color: var(--primary); }
-.emo-reset-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.emo-reset-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
 .reset-btn:hover { color: var(--primary); border-color: var(--primary); }
 
 .emotion-panel-shell input[type="range"]:focus-visible {
@@ -923,7 +975,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 60;
+    z-index: 120;
     /* subtle dark overlay to focus — modal panel itself is opaque */
     background: rgba(6, 18, 80, 0.38);
     -webkit-tap-highlight-color: transparent;
@@ -2324,7 +2376,7 @@ input[type=range]::-moz-range-thumb:hover {
 .slider-container {
   position: relative;
   width: 100%;
-  height: 8px;
+  height: 12px;
   margin: 12px 0;
   display: flex;
   align-items: center;

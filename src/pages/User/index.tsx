@@ -320,7 +320,6 @@ function User() {
             audios={ui.generatedAudios}
             playingId={ui.playingAudioId}
             onPlay={ui.handlePlayGeneratedAudio}
-            onRemove={ui.handleRemoveGeneratedAudio}
             audioProgress={ui.audioProgress}
             currentAudioPlayer={ui.currentAudioPlayer}
           />
