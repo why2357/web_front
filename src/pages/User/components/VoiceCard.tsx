@@ -21,9 +21,9 @@ export default function VoiceCard({ voice, active, playing, onSelect, onPreview 
         <div className="voice-play-overlay" onClick={(e) => onPreview?.(e, voice)}>
           <svg className="icon" viewBox="0 0 24 24" fill="currentColor">
             {playing ? (
-              <path d="M8 5v14l11-7z"></path>
-            ) : (
               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
+            ) : (
+              <path d="M8 5v14l11-7z"></path>
             )}
           </svg>
         </div>

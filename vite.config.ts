@@ -11,6 +11,15 @@ export default defineConfig({
   server: {
     port: 3000,        // 开发服务器端口
     open: true,        // 启动时自动打开浏览器
+    proxy: {
+      // 代理 OSS 音频请求，解决 CORS 问题（开发环境）
+      '/oss-audio': {
+        target: 'https://fengyun-tts.oss-cn-shanghai.aliyuncs.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/oss-audio/, ''),
+        secure: false,
+      },
+    },
   },
 
   // 生产环境构建优化

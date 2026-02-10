@@ -226,9 +226,25 @@ function User() {
                 >
                   <input type="file" ref={ui.cloneInputRef} style={{ display: 'none' }} accept="audio/*" onChange={ui.handleCloneUpload} />
                   {ui.cloneFile ? (
-                    <div>
-                      <div style={{ color: 'var(--primary)', fontWeight: 600, marginBottom: 8 }}>{ui.uploadingClone ? '上传中...' : '已选择文件'}</div>
-                      <div>{ui.cloneFile.name}</div>
+                    <div className="emo-ref-ready">
+                      <div className="emo-ref-ready-title">
+                        {ui.uploadingClone ? '上传中...' : '已选择文件'}
+                      </div>
+                      <div className="emo-ref-ready-name" title={ui.cloneFile.name}>
+                        {ui.cloneFile.name}
+                      </div>
+                      <div className="emo-ref-ready-actions">
+                        <button type="button" onClick={(e) => { e.stopPropagation(); ui.handlePlayCloneRef?.(e); }} className="btn" title="试听">
+                          <svg className="icon-sm" viewBox="0 0 24 24" fill="currentColor">
+                            {ui.cloneAudioPlaying ? (
+                              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
+                            ) : (
+                              <path d="M5 3l14 9-14 9V3z"></path>
+                            )}
+                          </svg>
+                          {ui.cloneAudioPlaying ? '暂停' : '试听'}
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <>
@@ -272,6 +288,7 @@ function User() {
                 emoRefFile={ui.emoRefFile}
                 emoRefInputRef={ui.emoRefInputRef}
                 uploadingEmo={ui.uploadingEmo}
+                emoRefAudioPlaying={ui.emoRefAudioPlaying}
                 handleEmoRefUpload={ui.handleEmoRefUpload}
                 handleEmoRefUploadFile={ui.handleEmoRefUploadFile}
                 handleRemoveEmoRef={ui.handleRemoveEmoRef}
@@ -304,6 +321,8 @@ function User() {
             playingId={ui.playingAudioId}
             onPlay={ui.handlePlayGeneratedAudio}
             onRemove={ui.handleRemoveGeneratedAudio}
+            audioProgress={ui.audioProgress}
+            currentAudioPlayer={ui.currentAudioPlayer}
           />
           </div>
 

@@ -10,7 +10,8 @@
       "mcp__chrome-devtools__take_snapshot",
       "mcp__chrome-devtools__evaluate_script",
       "mcp__chrome-devtools__take_screenshot",
-      "Bash(~/.ssh/config << 'EOF'\nHost 8.141.16.40\n    HostName 8.141.16.40\n    User root\n    IdentityFile ~/.ssh/ssh.pem\n    StrictHostKeyChecking no\nEOF)"
+      "Bash(~/.ssh/config << 'EOF'\nHost 8.141.16.40\n    HostName 8.141.16.40\n    User root\n    IdentityFile ~/.ssh/ssh.pem\n    StrictHostKeyChecking no\nEOF)",
+      "Bash(npx eslint:*)"
     ]
   }
 }

@@ -7,6 +7,18 @@ const DB_NAME = 'TTS_Audio_Cache';
 const DB_VERSION = 1;
 const STORE_NAME = 'audios';
 
+/**
+ * 获取代理 URL（开发环境使用代理解决 CORS 问题）
+ */
+function getProxyUrl(url: string): string {
+  // 检查是否是 OSS URL 且在开发环境
+  if (import.meta.env.DEV && url.includes('aliyuncs.com')) {
+    const urlObj = new URL(url);
+    return `/oss-audio${urlObj.pathname}${urlObj.search}`;
+  }
+  return url;
+}
+
 interface CachedAudio {
   id: string;              // 音频 ID（通常是 history ID）
   url: string;             // 原始 URL
@@ -60,31 +72,32 @@ class AudioCache {
   async set(id: string, url: string, ttl: number = 7 * 24 * 60 * 60 * 1000): Promise<void> {
     await this.ensureInitialized();
 
+    // 使用代理 URL（开发环境）
+    const fetchUrl = getProxyUrl(url);
+
+    // 先获取音频数据，再打开事务
+    const response = await fetch(fetchUrl);
+    if (!response.ok) throw new Error(`Failed to fetch audio: ${response.statusText}`);
+    const blob = await response.blob();
+
+    // 获取数据后再打开事务
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([STORE_NAME], 'readwrite');
       const store = transaction.objectStore(STORE_NAME);
 
-      fetch(url)
-        .then(response => {
-          if (!response.ok) throw new Error(`Failed to fetch audio: ${response.statusText}`);
-          return response.blob();
-        })
-        .then(blob => {
-          const now = Date.now();
-          const cachedAudio: CachedAudio = {
-            id,
-            url,
-            blob,
-            mimeType: blob.type,
-            createdAt: now,
-            expiresAt: now + ttl,
-          };
+      const now = Date.now();
+      const cachedAudio: CachedAudio = {
+        id,
+        url,  // 存储原始 URL
+        blob,
+        mimeType: blob.type,
+        createdAt: now,
+        expiresAt: now + ttl,
+      };
 
-          const request = store.put(cachedAudio);
-          request.onsuccess = () => resolve();
-          request.onerror = () => reject(request.error);
-        })
-        .catch(reject);
+      const request = store.put(cachedAudio);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
     });
   }
 
@@ -250,6 +263,12 @@ export async function getOrLoadAudio(id: string, url: string): Promise<string> {
   }
 
   // 缓存不存在，从网络加载并缓存
-  await audioCache.set(id, url);
-  return await audioCache.get(id) as string;
+  try {
+    await audioCache.set(id, url);
+    return await audioCache.get(id) as string;
+  } catch (error) {
+    // 如果代理失败，尝试直接使用原始 URL（生产环境可能有 CORS 配置）
+    console.warn('Proxy fetch failed, trying direct URL:', error);
+    throw error;
+  }
 }

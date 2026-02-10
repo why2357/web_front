@@ -18,6 +18,7 @@ type Props = {
   emoRefFile: File | null;
   emoRefInputRef: RefObject<HTMLInputElement | null>;
   uploadingEmo: boolean;
+  emoRefAudioPlaying: boolean;
   handleEmoRefUpload: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
   handleEmoRefUploadFile: (file: File) => Promise<void>;
   handleRemoveEmoRef: (e?: MouseEvent) => void;
@@ -38,6 +39,7 @@ export default function EmotionControls(props: Props) {
     emoRefFile,
     emoRefInputRef,
     uploadingEmo,
+    emoRefAudioPlaying,
     handleEmoRefUpload,
     handleEmoRefUploadFile,
     handleRemoveEmoRef,
@@ -121,8 +123,14 @@ export default function EmotionControls(props: Props) {
                 </div>
                 <div className="emo-ref-ready-actions">
                   <button type="button" onClick={handlePlayEmoRef} className="btn" title="试听">
-                    <svg className="icon-sm" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z" fill="currentColor"/></svg>
-                    试听
+                    <svg className="icon-sm" viewBox="0 0 24 24" fill="currentColor">
+                      {emoRefAudioPlaying ? (
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
+                      ) : (
+                        <path d="M5 3l14 9-14 9V3z"></path>
+                      )}
+                    </svg>
+                    {emoRefAudioPlaying ? '暂停' : '试听'}
                   </button>
                   <button type="button" onClick={handleRemoveEmoRef} className="btn btn-ghost" title="移除" aria-label="移除情感参考">
                     <svg className="icon-sm" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>

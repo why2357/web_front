@@ -61,6 +61,8 @@ export function useUserPage() {
   const [cloneFile, setCloneFile] = useState<File | null>(null);
   const [customVoiceId, setCustomVoiceId] = useState<number | null>(null);
   const cloneInputRef = useRef<HTMLInputElement>(null);
+  const [cloneAudioPlayer, setCloneAudioPlayer] = useState<HTMLAudioElement | null>(null);
+  const [cloneAudioPlaying, setCloneAudioPlaying] = useState(false);
 
   const [text, setText] = useState("");
   const [speed, setSpeed] = useState(1.0);
@@ -71,6 +73,8 @@ export function useUserPage() {
 
   const [emoRefFile, setEmoRefFile] = useState<File | null>(null);
   const [emoAudioId, setEmoAudioId] = useState<string | null>(null);
+  const [emoRefAudioPlayer, setEmoRefAudioPlayer] = useState<HTMLAudioElement | null>(null);
+  const [emoRefAudioPlaying, setEmoRefAudioPlaying] = useState(false);
   const [emoWeight, setEmoWeight] = useState(1.0);
   const emoRefInputRef = useRef<HTMLInputElement>(null);
   const [emoText, setEmoText] = useState("");
@@ -105,6 +109,8 @@ export function useUserPage() {
   const [generatedAudios, setGeneratedAudios] = useState<GeneratedAudio[]>([]);
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
   const [currentAudioPlayer, setCurrentAudioPlayer] = useState<HTMLAudioElement | null>(null);
+  // 进度跟踪
+  const [audioProgress, setAudioProgress] = useState<Record<string, { current: number; duration: number }>>({});
 
   const [loading, setLoading] = useState(false);
   const [uploadingClone, setUploadingClone] = useState(false);
@@ -332,10 +338,55 @@ export function useUserPage() {
 
   const handlePlayEmoRef = (e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (emoRefAudioPlaying && emoRefAudioPlayer) {
+      // 如果正在播放，则暂停
+      emoRefAudioPlayer.pause();
+      setEmoRefAudioPlaying(false);
+      setEmoRefAudioPlayer(null);
+      return;
+    }
+
     if (emoRefFile) {
       const url = URL.createObjectURL(emoRefFile);
       const audio = new Audio(url);
+      setEmoRefAudioPlayer(audio);
+      setEmoRefAudioPlaying(true);
       audio.play();
+      audio.onended = () => {
+        setEmoRefAudioPlaying(false);
+        setEmoRefAudioPlayer(null);
+      };
+      audio.onerror = () => {
+        setEmoRefAudioPlaying(false);
+        setEmoRefAudioPlayer(null);
+      };
+    }
+  };
+
+  const handlePlayCloneRef = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (cloneAudioPlaying && cloneAudioPlayer) {
+      // 如果正在播放，则暂停
+      cloneAudioPlayer.pause();
+      setCloneAudioPlaying(false);
+      setCloneAudioPlayer(null);
+      return;
+    }
+
+    if (cloneFile) {
+      const url = URL.createObjectURL(cloneFile);
+      const audio = new Audio(url);
+      setCloneAudioPlayer(audio);
+      setCloneAudioPlaying(true);
+      audio.play();
+      audio.onended = () => {
+        setCloneAudioPlaying(false);
+        setCloneAudioPlayer(null);
+      };
+      audio.onerror = () => {
+        setCloneAudioPlaying(false);
+        setCloneAudioPlayer(null);
+      };
     }
   };
 
@@ -397,7 +448,19 @@ export function useUserPage() {
           creditsUsed,
           createdAt: Date.now(),
         };
-        setGeneratedAudios(prev => [newAudio, ...prev]);
+        setGeneratedAudios(prev => {
+          const newList = [newAudio, ...prev];
+
+          // 自动滚动到生成结果模块
+          setTimeout(() => {
+            const generatedAudioElement = document.querySelector('.generated-audio-list');
+            if (generatedAudioElement) {
+              generatedAudioElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }, 100);
+
+          return newList;
+        });
 
         // 自动缓存新生成的音频
         audioCache.set(newAudioId, audioUrl).catch(console.error);
@@ -418,6 +481,7 @@ export function useUserPage() {
       setCurrentAudioPlayer(null);
     }
     setPlayingAudioId(null);
+    setAudioProgress({});
 
     // 如果点击的是正在播放的音频，则停止播放
     if (playingAudioId === audio.id) {
@@ -428,10 +492,35 @@ export function useUserPage() {
     const newAudio = new Audio(audio.audioUrl);
     setCurrentAudioPlayer(newAudio);
     setPlayingAudioId(audio.id);
+
+    // 设置进度跟踪
+    newAudio.ontimeupdate = () => {
+      if (newAudio.duration) {
+        setAudioProgress({
+          [audio.id]: { current: newAudio.currentTime, duration: newAudio.duration }
+        });
+      }
+    };
+
     newAudio.play();
     newAudio.onended = () => {
       setPlayingAudioId(null);
       setCurrentAudioPlayer(null);
+      setAudioProgress(prev => {
+        const newProgress = { ...prev };
+        delete newProgress[audio.id];
+        return newProgress;
+      });
+    };
+
+    newAudio.onerror = () => {
+      setPlayingAudioId(null);
+      setCurrentAudioPlayer(null);
+      setAudioProgress(prev => {
+        const newProgress = { ...prev };
+        delete newProgress[audio.id];
+        return newProgress;
+      });
     };
   };
 
@@ -449,11 +538,19 @@ export function useUserPage() {
     voice: Voice,
     onPlay?: (url: string) => void,
   ) => {
+    // 如果点击的是正在播放的音色，则停止播放（暂停/切换功能）
+    if (playingVoiceId === voice.id) {
+      audioPlayer?.pause();
+      setAudioPlayer(null);
+      setPlayingVoiceId(null);
+      return;
+    }
+
+    // 停止之前正在播放的其他音色
     if (audioPlayer) {
       audioPlayer.pause();
       setAudioPlayer(null);
       setPlayingVoiceId(null);
-      if (playingVoiceId === voice.id) return;
     }
 
     try {
@@ -531,7 +628,9 @@ export function useUserPage() {
     // uploads
     cloneFile,
     customVoiceId,
+    cloneAudioPlaying,
     emoRefFile,
+    emoRefAudioPlaying,
     emoAudioId,
     emoWeight,
     setEmoWeight,
@@ -550,6 +649,8 @@ export function useUserPage() {
     // generated audios
     generatedAudios,
     playingAudioId,
+    audioProgress,
+    currentAudioPlayer,
     // actions
     loadUserInfo,
     loadVoices,
@@ -559,6 +660,7 @@ export function useUserPage() {
     handleLogout,
     handleCloneUpload,
     handleCloneUploadFile,
+    handlePlayCloneRef,
     handleEmoRefUpload,
     handleEmoRefUploadFile,
     handleRemoveEmoRef,
