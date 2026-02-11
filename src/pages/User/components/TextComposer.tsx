@@ -11,10 +11,10 @@ export default function TextComposer({ text, setText }: Props) {
         placeholder="在此输入您想要生成的文本内容..."
         value={text}
         onChange={e => setText(e.target.value)}
-        maxLength={500}
+        maxLength={300}
       />
       <div className="composer-bar">
-        <span className="composer-count">{text.length} / 500</span>
+        <span className="composer-count">{text.length} / 300</span>
       </div>
     </div>
   );

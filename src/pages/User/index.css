@@ -1516,6 +1516,44 @@ header {
 .voice-card.playing .voice-play-overlay {
   background: rgba(99, 102, 241, 0.4);
 }
+
+/* 播放/暂停图标控制逻辑 */
+.voice-play-overlay .play-icon,
+.voice-play-overlay .pause-icon {
+  position: absolute;
+  transition: opacity 0.2s;
+}
+
+/* 默认两个图标都隐藏 */
+.voice-play-overlay .play-icon,
+.voice-play-overlay .pause-icon {
+  opacity: 0;
+}
+
+/* hover 时显示播放图标（三角形），隐藏暂停图标 */
+.voice-card:hover .voice-play-overlay .play-icon {
+  opacity: 1;
+}
+.voice-card:hover .voice-play-overlay .pause-icon {
+  opacity: 0;
+}
+
+/* 播放中且非 hover 时显示暂停图标 */
+.voice-card.playing:not(:hover) .voice-play-overlay .pause-icon {
+  opacity: 1;
+}
+.voice-card.playing:not(:hover) .voice-play-overlay .play-icon {
+  opacity: 0;
+}
+
+/* 播放中且 hover 时显示播放图标（hover 优先） */
+.voice-card.playing:hover .voice-play-overlay .play-icon {
+  opacity: 1;
+}
+.voice-card.playing:hover .voice-play-overlay .pause-icon {
+  opacity: 0;
+}
+
 .voice-card.playing .voice-icon {
   animation: pulse 2s ease-in-out infinite;
 }

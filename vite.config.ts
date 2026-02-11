@@ -13,10 +13,10 @@ export default defineConfig({
     open: true,        // 启动时自动打开浏览器
     proxy: {
       // 代理 OSS 音频请求，解决 CORS 问题（开发环境）
-      '/oss-audio': {
+      '/audio-proxy': {
         target: 'https://fengyun-tts.oss-cn-shanghai.aliyuncs.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/oss-audio/, ''),
+        rewrite: (path) => path.replace(/^\/audio-proxy/, ''),
         secure: false,
       },
     },

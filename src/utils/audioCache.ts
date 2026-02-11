@@ -8,13 +8,13 @@ const DB_VERSION = 1;
 const STORE_NAME = 'audios';
 
 /**
- * 获取代理 URL（开发环境使用代理解决 CORS 问题）
+ * 获取代理 URL（使用代理解决 OSS CORS 问题）
  */
 function getProxyUrl(url: string): string {
-  // 检查是否是 OSS URL 且在开发环境
-  if (import.meta.env.DEV && url.includes('aliyuncs.com')) {
+  // 对所有 OSS URL 使用代理（开发和生产环境）
+  if (url.includes('aliyuncs.com')) {
     const urlObj = new URL(url);
-    return `/oss-audio${urlObj.pathname}${urlObj.search}`;
+    return `/audio-proxy${urlObj.pathname}${urlObj.search}`;
   }
   return url;
 }
