@@ -2532,8 +2532,9 @@ input[type=range]::-moz-range-thumb:hover {
 .feed-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    margin-bottom: 8px;
 }
 .feed-voice {
     font-size: 0.8rem;
@@ -4255,18 +4256,41 @@ html.dark-mode .es-reset:hover {
 /* Feed card */
 .feed-card {
     background: #fff;
-    border: 1px solid var(--border);
+    border: 1px solid transparent;
     border-radius: 12px;
-    padding: 12px 16px;
+    padding: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.feed-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--primary);
+    transform: scaleY(0);
+    transition: transform 0.3s;
 }
 
 .feed-card:hover {
     border-color: var(--primary);
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
-    transform: translateX(2px);
+    box-shadow: var(--shadow-md);
+    transform: translateX(4px);
+    background: linear-gradient(to right, #eef2ff, #ffffff);
+}
+
+.feed-card:hover::before {
+    transform: scaleY(1);
+}
+
+.feed-card:active {
+    animation: scaleIn 0.2s ease-out;
 }
 
 /* Feed meta */
@@ -4281,15 +4305,15 @@ html.dark-mode .es-reset:hover {
 
 /* Feed text */
 .feed-text {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-main);
-    line-height: 1.5;
-    margin-bottom: 12px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.4;
+    margin-bottom: 10px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 /* ==================== Feed Player (历史播放器) ==================== */
@@ -4455,13 +4479,13 @@ html.dark-mode .feed-line {
 
 html.dark-mode .feed-card {
     background: var(--bg-card);
-    border-color: var(--border);
+    border-color: transparent;
     color: var(--text-main);
 }
 
 html.dark-mode .feed-card:hover {
     border-color: var(--primary);
-    background: #27272a;
+    background: linear-gradient(to right, rgba(99, 102, 241, 0.15), var(--bg-card));
 }
 
 html.dark-mode .feed-meta {
