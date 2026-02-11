@@ -1509,7 +1509,7 @@ header {
   color: #fff;
   border-radius: inherit;
 }
-.voice-card:hover .voice-play-overlay,
+/* 移除悬浮显示动画 - 仅在播放时显示 */
 .voice-card.playing .voice-play-overlay {
   opacity: 1;
 }
@@ -1530,28 +1530,26 @@ header {
   opacity: 0;
 }
 
-/* hover 时显示播放图标（三角形），隐藏暂停图标 */
-.voice-card:hover .voice-play-overlay .play-icon {
+/* 播放时显示暂停图标，隐藏播放图标 */
+.voice-card.playing .voice-play-overlay .pause-icon {
   opacity: 1;
 }
-.voice-card:hover .voice-play-overlay .pause-icon {
+.voice-card.playing .voice-play-overlay .play-icon {
   opacity: 0;
 }
 
-/* 播放中且非 hover 时显示暂停图标 */
-.voice-card.playing:not(:hover) .voice-play-overlay .pause-icon {
-  opacity: 1;
-}
-.voice-card.playing:not(:hover) .voice-play-overlay .play-icon {
-  opacity: 0;
+/* 暂停图标需要填充（全局icon设置fill:none）*/
+.voice-play-overlay .pause-icon-svg {
+  fill: #fff;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* 播放中且 hover 时显示播放图标（hover 优先） */
-.voice-card.playing:hover .voice-play-overlay .play-icon {
-  opacity: 1;
-}
-.voice-card.playing:hover .voice-play-overlay .pause-icon {
-  opacity: 0;
+/* voice-icon 播放时的脉冲动画 */
+.voice-card.playing .voice-icon {
+  animation: pulse 2s ease-in-out infinite;
 }
 
 .voice-card.playing .voice-icon {

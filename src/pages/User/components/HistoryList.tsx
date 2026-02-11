@@ -19,17 +19,9 @@ function getAudioUrl(res: any): string | null {
   return url && typeof url === 'string' ? url : null;
 }
 
-// 格式化时间显示
-function formatTime(seconds: number): string {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
-}
-
 export default function HistoryList({ history }: Props) {
   const [loadingId, setLoadingId] = useState<number | string | null>(null);
   const [playingId, setPlayingId] = useState<number | string | null>(null);
-  const [progress, setProgress] = useState<Record<number | string, { current: number; duration: number }>>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const ensureAudioUrl = async (item: any, id: number | string): Promise<string | null> => {
@@ -70,23 +62,8 @@ export default function HistoryList({ history }: Props) {
       audioRef.current = audio;
       setPlayingId(id);
 
-      // 设置进度跟踪
-      audio.ontimeupdate = () => {
-        if (audio.duration) {
-          setProgress(prev => ({
-            ...prev,
-            [id]: { current: audio.currentTime, duration: audio.duration }
-          }));
-        }
-      };
-
       audio.onended = () => {
         setPlayingId(null);
-        setProgress(prev => {
-          const newProgress = { ...prev };
-          delete newProgress[id];
-          return newProgress;
-        });
         audioRef.current = null;
       };
 
@@ -104,15 +81,6 @@ export default function HistoryList({ history }: Props) {
     } finally {
       setLoadingId(null);
     }
-  };
-
-  const handleSeek = (id: number | string, e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || playingId !== id) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = x / rect.width;
-    audio.currentTime = percentage * audio.duration;
   };
 
   const handleDownload = async (id: number | string) => {
@@ -156,7 +124,6 @@ export default function HistoryList({ history }: Props) {
         const id = item.task_id ?? item.id ?? index;
         const isLoading = loadingId === id;
         const isPlaying = playingId === id;
-        const progressInfo = progress[id];
 
         return (
           <div key={id} className="feed-item">
@@ -180,25 +147,12 @@ export default function HistoryList({ history }: Props) {
                 >
                   <svg className="icon icon-sm" viewBox="0 0 24 24" fill="currentColor">
                     {isPlaying ? (
-                      <rect x="6" y="4" width="4" height="16"></rect>
+                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"></path>
                     ) : (
                       <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     )}
                   </svg>
                 </button>
-
-                {/* 进度条 */}
-                {progressInfo && (
-                  <div className="feed-progress" onClick={(e) => handleSeek(id, e)}>
-                    <div className="feed-progress-track">
-                      <div
-                        className="feed-progress-fill"
-                        style={{ width: `${(progressInfo.current / progressInfo.duration) * 100}%` }}
-                      ></div>
-                    </div>
-                    <span className="feed-time">{formatTime(progressInfo.current)} / {formatTime(progressInfo.duration)}</span>
-                  </div>
-                )}
 
                 {/* 下载按钮 */}
                 <div className="feed-download" onClick={(e) => { e.stopPropagation(); handleDownload(id); }}>

@@ -345,6 +345,11 @@ function Login() {
 
       <footer className="footer-fixed">
         <div>© 2026 Crea Vedio Inc. Powered by Intelligent Engine.</div>
+        <div className="icp-link">
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
+            沪ICP备2025150536号-1
+          </a>
+        </div>
       </footer>
     </div>
   );

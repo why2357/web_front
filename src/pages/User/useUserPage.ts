@@ -6,6 +6,7 @@ import { generateSpeech, uploadEmotionReference } from "../../api/synthesis";
 import { getSynthesisHistory } from "../../api/history";
 import { logout, setLogoutFlag } from "../../api/auth";
 import { audioCache } from "../../utils/audioCache";
+import { userInfoCache, voicesCache, historyCache, selectedVoiceCache } from "../../utils/localStore";
 
 // --- 开发辅助：方便在本地覆盖/清理 token（仅用于本地调试） ---
 export function __dev_setToken(
@@ -148,6 +149,34 @@ export function useUserPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 同步 selectedVoice 到缓存
+  useEffect(() => {
+    if (selectedVoice) {
+      selectedVoiceCache.set(selectedVoice);
+    }
+  }, [selectedVoice]);
+
+  // 同步 userInfo 到缓存
+  useEffect(() => {
+    if (userInfo) {
+      userInfoCache.set(userInfo);
+    }
+  }, [userInfo]);
+
+  // 同步 voices 到缓存
+  useEffect(() => {
+    if (voices.length > 0) {
+      voicesCache.set(voices);
+    }
+  }, [voices]);
+
+  // 同步 history 到缓存
+  useEffect(() => {
+    if (history.length > 0) {
+      historyCache.set(history);
+    }
+  }, [history]);
+
   // --- 激活码相关操作 ---
   const openInviteModal = () => {
     setInviteCode("");
@@ -191,29 +220,78 @@ export function useUserPage() {
 
   const loadUserInfo = async () => {
     try {
+      // 先检查缓存
+      const cached = userInfoCache.get();
+      if (cached) {
+        setUserInfo(cached);
+      }
+      // 无论是否有缓存，都请求最新数据
       const data = await getCurrentUser();
       setUserInfo(data);
+      userInfoCache.set(data);
     } catch (err) {
       console.error("获取用户信息失败", err);
+      // 如果请求失败但有缓存，使用缓存数据
+      const cached = userInfoCache.get();
+      if (cached) {
+        setUserInfo(cached);
+      }
     }
   };
 
   const loadVoices = async () => {
     try {
+      // 先检查缓存
+      const cached = voicesCache.get();
+      if (cached) {
+        setVoices(cached);
+        // 如果有缓存且没有已选音色，默认选第一个
+        if (cached.length > 0 && !selectedVoice) {
+          setSelectedVoice(cached[0]);
+        }
+      }
+      // 请求最新数据
       const data = await getVoices();
       setVoices(data);
-      if (data.length > 0) setSelectedVoice(data[0]);
+      voicesCache.set(data);
+      // 如果没有已选音色，默认选第一个
+      if (data.length > 0) {
+        // 检查是否有缓存的已选音色
+        const cachedSelected = selectedVoiceCache.get();
+        if (cachedSelected) {
+          setSelectedVoice(cachedSelected);
+        } else {
+          setSelectedVoice(data[0]);
+        }
+      }
     } catch (err) {
       console.error("获取音色列表失败", err);
+      // 如果请求失败但有缓存，使用缓存数据
+      const cached = voicesCache.get();
+      if (cached) {
+        setVoices(cached);
+      }
     }
   };
 
   const loadHistory = async () => {
     try {
-      const data = await getSynthesisHistory({ page: 1, size: 20 }); // 后端 PaginationParams 若为 limit/offset 可改为 { limit: 20, offset: 0 }
+      // 先检查缓存
+      const cached = historyCache.get();
+      if (cached) {
+        setHistory(cached);
+      }
+      // 请求最新数据
+      const data = await getSynthesisHistory({ page: 1, size: 20 });
       setHistory(data.items || []);
+      historyCache.set(data.items || []);
     } catch (err) {
       console.error("获取历史记录失败", err);
+      // 如果请求失败但有缓存，使用缓存数据
+      const cached = historyCache.get();
+      if (cached) {
+        setHistory(cached);
+      }
     }
   };
 
@@ -295,6 +373,13 @@ export function useUserPage() {
         name: file.name.replace(/\.[^/.]+$/, ""),
         audio_file: file,
       });
+      // 缓存克隆音频文件
+      const cloneCacheId = `clone-${res.id}`;
+      const cloneUrl = URL.createObjectURL(file);
+      await audioCache.set(cloneCacheId, cloneUrl);
+      // 释放临时 URL
+      URL.revokeObjectURL(cloneUrl);
+
       setCustomVoiceId(res.id);
     } catch (err: any) {
       console.error("上传克隆音频失败", err);
@@ -315,7 +400,16 @@ export function useUserPage() {
     setUploadingEmo(true);
     try {
       const res = await uploadEmotionReference(file);
-      setEmoAudioId(res.emo_audio_identifier || res.emo_audio);
+      const emoAudioId = res.emo_audio_identifier || res.emo_audio;
+
+      // 缓存情感参考音频文件
+      const emoCacheId = `emo-${emoAudioId}`;
+      const emoUrl = URL.createObjectURL(file);
+      await audioCache.set(emoCacheId, emoUrl);
+      // 释放临时 URL
+      URL.revokeObjectURL(emoUrl);
+
+      setEmoAudioId(emoAudioId);
     } catch (err: any) {
       console.error("上传情感参考失败", err);
       setEmoRefFile(null);

@@ -787,6 +787,20 @@
   color: #94a3b8;
   animation: fadeInUp 1s ease-out 1.8s backwards;
   transition: opacity 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.icp-link a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.icp-link a:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
 }
 
 .footer-fixed:hover {
