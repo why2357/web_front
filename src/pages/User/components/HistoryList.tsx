@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { getHistoryDownloadUrl } from '../../../api/history';
-import { getOrLoadAudio } from '../../../utils/audioCache';
+import { getOrLoadAudio, audioCache } from '../../../utils/audioCache';
 
 type Item = any;
 
@@ -27,6 +27,13 @@ export default function HistoryList({ history }: Props) {
   const ensureAudioUrl = async (item: any, id: number | string): Promise<string | null> => {
     const cacheId = `history-${id}`;
     try {
+      // 先尝试从缓存获取（优先级最高）
+      const cachedUrl = await audioCache.get(cacheId);
+      if (cachedUrl) {
+        return cachedUrl;
+      }
+
+      // 缓存未命中，获取 URL
       const direct = item.audio_url;
       if (direct && typeof direct === 'string') {
         return await getOrLoadAudio(cacheId, direct);

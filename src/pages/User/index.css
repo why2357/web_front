@@ -1509,11 +1509,17 @@ header {
   color: #fff;
   border-radius: inherit;
 }
-/* 移除悬浮显示动画 - 仅在播放时显示 */
-.voice-card.playing .voice-play-overlay {
+/* 悬浮时显示 overlay 和播放图标 */
+.voice-card:hover .voice-play-overlay {
   opacity: 1;
 }
+.voice-card:hover .voice-play-overlay .play-icon {
+  opacity: 1;
+}
+
+/* 播放时的 overlay 样式 - 保持显示 */
 .voice-card.playing .voice-play-overlay {
+  opacity: 1;
   background: rgba(99, 102, 241, 0.4);
 }
 
@@ -1538,8 +1544,16 @@ header {
   opacity: 0;
 }
 
+/* 播放且悬浮时，仍然显示暂停图标 */
+.voice-card.playing:hover .voice-play-overlay .pause-icon {
+  opacity: 1;
+}
+.voice-card.playing:hover .voice-play-overlay .play-icon {
+  opacity: 0;
+}
+
 /* 暂停图标需要填充（全局icon设置fill:none）*/
-.voice-play-overlay .pause-icon-svg {
+.voice-play-overlay .pause-icon {
   fill: #fff;
   stroke: currentColor;
   stroke-width: 2;

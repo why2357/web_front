@@ -23,8 +23,8 @@ export default function VoiceCard({ voice, active, playing, onSelect, onPreview 
           <svg className="icon play-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z"></path>
           </svg>
-          {/* 暂停图标（两条竖线）- 仅在播放且非 hover 时显示 */}
-          <svg className="icon pause-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+          {/* 暂停图标（两条竖线）- 仅在播放时显示 */}
+          <svg className="icon pause-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"></path>
           </svg>
         </div>
