@@ -180,16 +180,26 @@ function User() {
               }
             }}
           >
-            {ui.voices.map((v) => (
-              <VoiceCard
-                key={v.id}
-                voice={v}
-                active={ui.selectedVoice?.id === v.id}
-                playing={ui.playingVoiceId === String(v.id)}
-                onSelect={ui.setSelectedVoice}
-                onPreview={(e, voice) => { e.stopPropagation(); ui.handlePreviewVoice(voice); }}
-              />
-            ))}
+            {ui.voices.map((v) => {
+              // 调试信息：检查 playing 属性的比较逻辑
+              const isPlaying = ui.playingVoiceId === v.id;
+              console.log('[VoiceCard render] voice:', v.name, 'id:', v.id, 'playingVoiceId:', ui.playingVoiceId, 'isPlaying:', isPlaying);
+
+              return (
+                <VoiceCard
+                  key={v.id}
+                  voice={v}
+                  active={ui.selectedVoice?.id === v.id}
+                  playing={isPlaying}
+                  onSelect={ui.setSelectedVoice}
+                  onPreview={(e, voice) => {
+                    console.log('[onPreview] voice:', voice.name, 'id:', voice.id, 'type:', typeof voice.id);
+                    e.stopPropagation();
+                    ui.handlePreviewVoice(voice);
+                  }}
+                />
+              );
+            })}
             {ui.loadingVoices && (
               <div className="voice-list-loading">加载中…</div>
             )}

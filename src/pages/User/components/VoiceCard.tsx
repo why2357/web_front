@@ -10,10 +10,24 @@ type Props = {
 };
 
 export default function VoiceCard({ voice, active, playing, onSelect, onPreview }: Props) {
+  // 构建类名
+  const cardClassName = `voice-card ${active ? 'active' : ''} ${playing ? 'playing' : ''}`;
+
+  // 调试信息
+  console.log('[VoiceCard] Render:', {
+    voiceName: voice.name,
+    voiceId: voice.id,
+    voiceIdType: typeof voice.id,
+    active,
+    playing,
+    playingValue: playing,
+    cardClassName,
+  });
+
   return (
     <div
       key={voice.id}
-      className={`voice-card ${active ? 'active' : ''} ${playing ? 'playing' : ''}`}
+      className={cardClassName}
       onClick={() => onSelect?.(voice)}
     >
       <div className={`voice-icon ${voice.gender === 'male' ? 'v-blue' : 'v-pink'}`}>

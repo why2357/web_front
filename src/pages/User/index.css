@@ -1552,13 +1552,14 @@ header {
   opacity: 0;
 }
 
-/* 暂停图标需要填充（全局icon设置fill:none）*/
-.voice-play-overlay .pause-icon {
-  fill: #fff;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+/* 播放/暂停图标需要填充（覆盖全局icon设置fill:none）*/
+.voice-play-overlay .icon.pause-icon {
+  fill: #fff !important;
+  stroke: none !important;
+}
+.voice-play-overlay .icon.play-icon {
+  fill: #fff !important;
+  stroke: none !important;
 }
 
 /* voice-icon 播放时的脉冲动画 */
